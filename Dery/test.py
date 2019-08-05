@@ -24,8 +24,8 @@ BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
  
 # Set the width and height of each snake segment
-segment_width = 15
-segment_height = 15
+segment_width = 30
+segment_height = 30
 # Margin between each segment
 segment_margin = 3
  
@@ -55,7 +55,7 @@ class Segment(pygame.sprite.Sprite):
 pygame.init()
  
 # Create an 800x600 sized screen
-screen = pygame.display.set_mode([800, 600])
+screen = pygame.display.set_mode([1920, 1080])
  
 # Set the title of the window
 pygame.display.set_caption('Snake Example')
@@ -65,8 +65,8 @@ allspriteslist = pygame.sprite.Group()
 # Create an initial snake
 snake_segments = []
 for i in range(15):
-    x = 250 - (segment_width + segment_margin) * i
-    y = 30
+    x = 500 - (segment_width + segment_margin) * i
+    y = 500
     segment = Segment(x, y)
     snake_segments.append(segment)
     allspriteslist.add(segment)
