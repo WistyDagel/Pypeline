@@ -1,12 +1,138 @@
+# from pygame import *
+
+# pygame.init()
+
+# win = pygame.display.set_mode((500, 500))
+
+# pygame.display.set_caption("First Game")
+
+"""
+ Simple snake example.
+
+ Sample Python/Pygame Programs
+ Simpson College Computer Science
+ http://programarcadegames.com/
+ http://simpson.edu/computer-science/
+
+"""
+import math
+
 import pygame
 
+# --- Globals ---
+# Colors
+BLACK = (0, 0, 20)
+WHITE = (255, 255, 255)
+BLUE = (0, 0, 40)
 
-def main():
+# Set the width and height of each snake segment
+segment_width = 15
+segment_height = 15
+# Margin between each segment
+segment_margin = 3
 
-    pygame.init()
+# Set initial speed
+x_change = segment_width + segment_margin
+y_change = 0
 
 
-if __name__ == '__main__':
-    main()
+class Segment(pygame.sprite.Sprite):
+    """ Class to represent one segment of the snake. """
 
-print(pygame.get_init())
+    # -- Methods
+    # Constructor function
+    def __init__(self, x, y):
+        # Call the parent's constructor
+        super().__init__()
+
+        # Set height, width
+        self.image = pygame.Surface([segment_width, segment_height])
+        self.image.fill(WHITE)
+
+        # Make our top-left corner the passed-in location.
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+
+
+# Call this function so the Pygame library can initialize itself
+pygame.init()
+
+# Create an 800x600 sized screen
+screen = pygame.display.set_mode([800, 600])
+
+# Set the title of the window
+pygame.display.set_caption('Snake Example')
+
+allspriteslist = pygame.sprite.Group()
+
+# Create an initial snake
+snake_segments = []
+for i in range(8):
+    x = segment_width * i
+    y = segment_width
+    segment = Segment(x, y)
+    snake_segments.append(segment)
+    allspriteslist.add(segment)
+
+clock = pygame.time.Clock()
+done = False
+
+while not done:
+
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            done = True
+
+        # Set the speed based on the key pressed
+        # We want the speed to be enough that we move a full
+        # segment, plus the margin.
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_LEFT:
+                x_change = (segment_width + segment_margin) * -1
+                y_change = 0
+            if event.key == pygame.K_RIGHT:
+                x_change = (segment_width + segment_margin)
+                y_change = 0
+            if event.key == pygame.K_UP:
+                x_change = 0
+                y_change = (segment_height + segment_margin) * -1
+            if event.key == pygame.K_DOWN:
+                x_change = 0
+                y_change = (segment_height + segment_margin)
+
+    # Get rid of last segment of the snake
+    # .pop() command removes last item in list
+    old_segment = snake_segments.pop()
+    allspriteslist.remove(old_segment)
+
+    # Figure out where new segment will be
+    x = snake_segments[0].rect.x + x_change
+    y = snake_segments[0].rect.y + y_change
+    segment = Segment(x, y)
+
+    # Insert new segment into the list
+    snake_segments.insert(0, segment)
+    allspriteslist.add(segment)
+
+    # -- Draw everything
+    # Clear screen
+    screen.fill(BLACK)
+
+    for i in range(math.ceil(800 / segment_width)):
+        pygame.draw.line(screen, BLUE, (i * (segment_width + segment_margin), 0),
+                         (i * (segment_width + segment_margin), 600), segment_margin)
+
+    for i in range(math.ceil(600 / segment_height)):
+        pygame.draw.line(screen, BLUE, (0, i * (segment_height + segment_margin)),
+                         (800, i * (segment_width + segment_margin)), segment_margin)
+
+    allspriteslist.draw(screen)
+
+    # Flip screen
+    pygame.display.flip()
+
+    # Pause
+    clock.tick(5)
+
+pygame.quit()
