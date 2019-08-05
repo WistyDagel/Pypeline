@@ -1,10 +1,10 @@
-from pygame import *
+# from pygame import *
 
-pygame.init()
+# pygame.init()
 
-win = pygame.display.set_mode((500, 500))
+# win = pygame.display.set_mode((500, 500))
 
-pygame.display.set_caption("First Game")
+# pygame.display.set_caption("First Game")
 
 """
  Simple snake example.
