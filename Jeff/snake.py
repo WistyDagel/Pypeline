@@ -17,7 +17,7 @@ grid_margin = 1  # must be even for pygame line drawing
 grid_width = 20  # 32
 grid_height = 20  # 24
 
-clock_spd = 10  # 10
+clock_spd = 5  # 10
 
 print("something")
 
