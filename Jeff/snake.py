@@ -17,6 +17,8 @@ grid_margin = 3  # must be even for pygame line drawing
 grid_width = 60  # 32
 grid_height = 30  # 24
 
+print("something")
+
 screen_width = ((grid_margin + grid_scl) * grid_width) + grid_margin
 screen_height = ((grid_margin + grid_scl) * grid_height) + grid_margin
 
