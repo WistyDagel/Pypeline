@@ -1,6 +1,8 @@
-import Pypeline.Project.drawGrid as drawGrid
-import Pypeline.Project.PowerUps.minePowerUp as mine
-import Pypeline.Project.PowerUps.nukePowerUp as nuke
-import Pypeline.Project.PowerUps.speedPowerUp as speed
-import Pypeline.Project.PowerUps.phasePowerUp as phase
+import drawGrid as drawGrid
+import PowerUps.minePowerUp as mine
+import PowerUps.nukePowerUp as nuke
+import PowerUps.speedPowerUp as speed
+import PowerUps.phasePowerUp as phase
 import pygame
+
+mine
