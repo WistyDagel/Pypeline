@@ -29,6 +29,7 @@ screen_height = ((grid_margin + grid_cell_scl) * grid_height) + grid_margin  # h
 CLOCK_SPD = 50  # the base clock speed, or arbitrary framerate - keep at 100
 current_spd = CLOCK_SPD  # the current speed of the game (may change)
 speed_timer = 0  # used to regulate when the current speed is changed
+slow_timer = 0 # used to regulate when the user slows their bike
 
 pygame.init()
 
@@ -224,11 +225,13 @@ while not done:
                 pressed_down = False
                 bike.v_multiplier = 1
 
+    # Pressing the down key closes the window 
+    # Starts a timer allowing you to only slow down for a specific amount of time
     if pressed_down:
         bike.v_multiplier = .7
-        timer = 500
-        timer -= (1 if timer > 0 else 0)
-    if timer == 0:
+        slow_timer = 500
+    slow_timer -= (1 if slow_timer > 0 else 0)
+    if slow_timer == 0:
         bike.v_multiplier = 1
 
     # advance the bike in the direction it is going
