@@ -225,8 +225,11 @@ while not done:
                 bike.v_multiplier = 1
 
     if pressed_down:
-        bike.v_multiplier = .5
-
+        bike.v_multiplier = .7
+        timer = 500
+        timer -= (1 if timer > 0 else 0)
+    if timer == 0:
+        bike.v_multiplier = 1
 
     # advance the bike in the direction it is going
     bike.move()
