@@ -34,7 +34,7 @@ pygame.init()
 
 screen = pygame.display.set_mode([screen_width, screen_height])
 
-pygame.display.set_caption('Jeff bike')
+pygame.display.set_caption('Chris bike')
 
 
 # represents a square on the grid
@@ -221,10 +221,10 @@ while not done:
         elif event.type == pygame.KEYUP:
             if event.key == pygame.K_DOWN:
                 pressed_down = False
-                current_spd = 50
+                CLOCK_SPD = 50
 
     if pressed_down:
-        current_spd = CLOCK_SPD * .5
+        CLOCK_SPD = 30
 
 
     # advance the bike in the direction it is going
