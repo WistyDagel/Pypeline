@@ -82,6 +82,7 @@ class Bike:
         self.direction = direction
 
         self.vel = 1  # velocity - hard-coded to 1 pixel per frame
+        self.v_multiplier = 1 #velocity modifier for when the bike slows down  
         self.alive = True  # used to quickly check the status of the bike
 
     # appends a new Square to the end of the line_pieces. The x and y of the new Square are the previous Square's
@@ -90,8 +91,8 @@ class Bike:
         bike = self.bike()
         vel_mult = self.direction.get_multipliers()  # velocity multipliers (x, y)
 
-        self.line_pieces.append(Square(bike.x + (vel_mult[0] * self.vel),  # new x
-                                       bike.y + (vel_mult[1] * self.vel),  # new y
+        self.line_pieces.append(Square(bike.x + (vel_mult[0] * self.vel * self.v_multiplier),  # new x
+                                       bike.y + (vel_mult[1] * self.vel * self.v_multiplier),  # new y
                                        self.scl,  # same width
                                        self.scl))  # same height
 
@@ -221,10 +222,10 @@ while not done:
         elif event.type == pygame.KEYUP:
             if event.key == pygame.K_DOWN:
                 pressed_down = False
-                CLOCK_SPD = 50
+                bike.v_multiplier = 1
 
     if pressed_down:
-        CLOCK_SPD = 30
+        bike.v_multiplier = .5
 
 
     # advance the bike in the direction it is going
