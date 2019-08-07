@@ -7,6 +7,7 @@ from enum import *
 GRID_BG = (0, 0, 0)
 GRID_FG = (40, 140, 160)
 WHITE = (255, 255, 255)
+
 RED = (255, 50, 50)
 GREEN = (50, 255, 50)
 BLUE = (50, 50, 255)
@@ -34,19 +35,22 @@ pygame.init()
 
 screen = pygame.display.set_mode([screen_width, screen_height])
 
-pygame.display.set_caption('Chris bike')
+pygame.display.set_caption('Jeff bike')
 
 
 # represents a square on the grid
-class Square:
+class Square():
     def __init__(self, x, y, w, h):
         self.x = x
         self.y = y
         self.w = w
         self.h = h
 
+    def to_rect(self):
+        return pygame.Rect(self.x, self.y, self.w, self.h)
+
     def overlaps(self, other):
-        return True if self.x + self.w > other.x and self.x < other.x + other.w and self.y + self.h > other.y and self.y < other.y + other.h else False
+        return self.to_rect().colliderect(other.to_rect())
 
 
 class Bike:
@@ -82,7 +86,6 @@ class Bike:
         self.direction = direction
 
         self.vel = 1  # velocity - hard-coded to 1 pixel per frame
-        self.v_multiplier = 1 #velocity modifier for when the bike slows down  
         self.alive = True  # used to quickly check the status of the bike
 
     # appends a new Square to the end of the line_pieces. The x and y of the new Square are the previous Square's
@@ -91,8 +94,8 @@ class Bike:
         bike = self.bike()
         vel_mult = self.direction.get_multipliers()  # velocity multipliers (x, y)
 
-        self.line_pieces.append(Square(bike.x + (vel_mult[0] * self.vel * self.v_multiplier),  # new x
-                                       bike.y + (vel_mult[1] * self.vel * self.v_multiplier),  # new y
+        self.line_pieces.append(Square(bike.x + (vel_mult[0] * self.vel),  # new x
+                                       bike.y + (vel_mult[1] * self.vel),  # new y
                                        self.scl,  # same width
                                        self.scl))  # same height
 
@@ -192,41 +195,26 @@ clock = pygame.time.Clock()
 # run while not done
 done = False
 
-pressed_down = False
-
 while not done:
 
     for event in pygame.event.get():
         # click the 'X' to close the window
         if event.type == pygame.QUIT:
             done = True
-    
+
         # key press events
         if event.type == pygame.KEYDOWN:
-            
             # bike controls
             # press right to turn right
             if event.key == pygame.K_RIGHT:
-                bike.turn_right() 
+                bike.turn_right()
             # press left to turn left
             if event.key == pygame.K_LEFT:
                 bike.turn_left()
 
-            # press down to slow the bike
-            if event.key == pygame.K_DOWN:
-                pressed_down = True
-
             # pressing esc also closes the window
-            if event.key == pygame.K_ESCAPE:
-                done = True
-        elif event.type == pygame.KEYUP:
-            if event.key == pygame.K_DOWN:
-                pressed_down = False
-                bike.v_multiplier = 1
-
-    if pressed_down:
-        bike.v_multiplier = .5
-
+            # if event.key == pygame.K_ESCAPE:
+            #     done = True
 
     # advance the bike in the direction it is going
     bike.move()
@@ -246,6 +234,8 @@ while not done:
     if not bike.alive:
         bike = c_bike()
         powerup = c_powerup()
+        current_spd = CLOCK_SPD
+        speed_timer = 0
 
     # calling the draw method after all the positioning and checking is done
     draw()
