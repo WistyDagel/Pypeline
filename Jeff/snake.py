@@ -5,15 +5,17 @@ from enum import *
 
 # color tuples
 GRID_BG = (0, 0, 0)
-GRID_FG = (40, 140, 160)
-WHITE = (255, 255, 255)
-RED = (255, 50, 50)
-
+# GRID_FG = (40, 140, 160)
 GRID_FG = GRID_BG
+WHITE = (255, 255, 255)
+RED = (255, 0, 0)
+GREEN = (0, 255, 0)
+BLUE = (0, 0, 255)
+
 
 # the scale of the grid and distance between cells
 grid_scl = 18  # width & height of each grid cell (18)
-grid_margin = 0  # must be even for pygame line drawing (1)
+grid_margin = 1  # must be even for pygame line drawing (1)
 grid_width = 32  # number of cells on the grid's x-axis (32)
 grid_height = 24  # number of cells on the grid's y-axis (24)
 
@@ -86,7 +88,8 @@ class Snake:
         head = self.pieces[0]
         tup = self.dir_tuples[self.direction.value]
 
-        self.pieces.insert(0, Piece(head.x + (tup[0] * self.vel), head.y + (tup[1] * self.vel)))
+        self.pieces.insert(0, Piece(head.x + (tup[0] * self.vel * (0.5 if self.slow else 1)),
+                                    head.y + (tup[1] * self.vel * (0.5 if self.slow else 1))))
         if self.add == 0:
             self.pieces.pop()
         self.add -= (1 if self.add > 0 else 0)
@@ -170,7 +173,7 @@ def draw():
 
     #snake
     for piece in snake.pieces:
-        pygame.draw.rect(screen, WHITE if snake.alive else RED, pygame.Rect(piece.x, piece.y, grid_scl, grid_scl))
+        pygame.draw.rect(screen, GREEN, pygame.Rect(piece.x, piece.y, grid_scl, grid_scl))
 
     # food
     pygame.draw.rect(screen, RED, pygame.Rect(food.x, food.y, grid_scl, grid_scl))
@@ -199,6 +202,12 @@ while not done:
                 snake.turn_left()
             if event.key == pygame.K_ESCAPE:
                 done = True
+
+        keys = pygame.key.get_pressed()  # checking pressed keys
+        if keys[pygame.K_DOWN]:
+            snake.slow = True
+        else:
+            snake.slow = False
 
     snake.move()
     if snake.eat(food):

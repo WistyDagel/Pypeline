@@ -2,15 +2,20 @@ import math
 import random
 import pygame
 from enum import *
-from pygame import Rect as Square
+from pygame import Rect
 
 # sample color tuples
 GRID_BG = (0, 0, 0)
 GRID_FG = (40, 140, 160)
 WHITE = (255, 255, 255)
+
 RED = (255, 50, 50)
 GREEN = (50, 255, 50)
 BLUE = (50, 50, 255)
+
+# set bike and powerup to arbitrary colors
+bike_color = GREEN
+powerup_color = RED
 
 # GRID_FG = GRID_BG
 
@@ -34,10 +39,16 @@ screen = pygame.display.set_mode([screen_width, screen_height])
 pygame.display.set_caption('Jeff bike')
 
 
-class Powerup(Square):
-    def __init__(self, x, y, scl, color):
-        super().__init__(x, y, scl, scl)
-        self.color = color
+# represents a square on the grid
+class Square:
+    def __init__(self, x, y, w, h):
+        self.x = x
+        self.y = y
+        self.w = w
+        self.h = h
+
+    def overlaps(self, other):
+        return True if self.x + self.w > other.x and self.x < other.x + other.w and self.y + self.h > other.y and self.y < other.y + other.h else False
 
 
 class Bike:
@@ -67,11 +78,10 @@ class Bike:
     :param scl - the size of each Piece of the line (scale)
     :param direction - the Direction that the bike will be going at the start of the game
     """
-    def __init__(self, x: int, y: int, scl: int, direction: Direction, color):
+    def __init__(self, x: int, y: int, scl: int, direction: Direction):
         self.scl = scl
         self.line_pieces = [Square(x, y, self.scl, self.scl)]
         self.direction = direction
-        self.color = color
 
         self.vel = 1  # velocity - hard-coded to 1 pixel per frame
         self.alive = True  # used to quickly check the status of the bike
@@ -104,21 +114,18 @@ class Bike:
     # check if the bike overlaps its line and
     # check if the bike is outside the play area (defined by the x, y, w, h params)
     def check_die(self, x, y, w, h):
-        bike = self.bike()
-        if len(self.line_pieces) > self.scl:
-            for piece in self.line_pieces[:len(self.line_pieces) - (self.scl * self.vel)]:
-                if bike.colliderect(piece):
-                    self.alive = False
+        # TODO check if line overlaps itself
         # check if bike() overlaps() anything between line_pieces[0] and line_pieces[len(line_pieces) - self.scl]
 
         # check if line is outside screen
+        bike = self.bike()
         if bike.x < x or bike.x > w - self.scl or bike.y < y or bike.y > h - self.scl:
             self.alive = False
 
     # returns true if the bike is overlapping a given square at any point
     # should be used to determine if a given bike should interact with a given powerup
     def use(self, powerup):
-        if self.bike().colliderect(powerup):
+        if self.bike().overlaps(powerup):
             return True
         return False
 
@@ -136,10 +143,10 @@ class Bike:
 # returns a powerup positioned at a random location on the screen
 def c_powerup():
     scale = bike.scl * 1.5
-    powerup = Powerup(random.randint(0, int(screen_width - scale + 1)),  # random x
-                      random.randint(0, int(screen_height - scale + 1)),  # random y
-                      scale,  # 50% larger than the bike
-                      RED)  # will be drawn as RED
+    powerup = Square(random.randint(0, int(screen_width - scale + 1)),  # random x
+                     random.randint(0, int(screen_height - scale + 1)),  # random y
+                     scale,  # 50% larger than the bike
+                     scale)  # 50% larger than the bike
     return powerup
 
 
@@ -147,7 +154,7 @@ def c_powerup():
 def c_bike():
     return Bike(grid_margin + (grid_width - math.ceil(grid_width / 2)) * (grid_cell_scl + grid_margin),
                 grid_margin + (grid_height - math.ceil(grid_height/2)) * (grid_cell_scl + grid_margin),
-                6, Bike.Direction.RIGHT, WHITE)
+                6, Bike.Direction.RIGHT)
 
 
 # draw the background, grid, and squares
@@ -167,12 +174,10 @@ def draw():
 
     # bike squares
     for piece in bike.line_pieces:
-        pygame.draw.rect(screen, bike.color if bike.alive else RED, piece)
+        pygame.draw.rect(screen, bike_color, pygame.Rect(piece.x, piece.y, piece.w, piece.h))
 
     # powerup
-    pygame.draw.rect(screen, powerup.color, powerup)
-
-    pygame.draw.rect(screen, BLUE, bike.line_pieces[0])
+    pygame.draw.rect(screen, powerup_color, pygame.Rect(powerup.x, powerup.y, powerup.w, powerup.h))
 
     # flip the screen (? not sure why needed ?)
     pygame.display.flip()
@@ -224,11 +229,11 @@ while not done:
     # make the bike check if it is 'dead' (see method declaration for more info)
     bike.check_die(0, 0, screen_width, screen_height)
     # if the bike is dead, regenerate it and the powerup
-    # if not bike.alive:
-    #     bike = c_bike()
-    #     powerup = c_powerup()
-    #     current_spd = CLOCK_SPD
-    #     speed_timer = 0
+    if not bike.alive:
+        bike = c_bike()
+        powerup = c_powerup()
+        current_spd = CLOCK_SPD
+        speed_timer = 0
 
     # calling the draw method after all the positioning and checking is done
     draw()
