@@ -34,6 +34,7 @@ screen_height = ((grid_margin + grid_cell_scl) * grid_height) + grid_margin  # h
 CLOCK_SPD = 50  # the base clock speed, or arbitrary framerate - keep at 100
 current_spd = CLOCK_SPD  # the current speed of the game (may change)
 speed_timer = 0  # used to regulate when the current speed is changed
+slow_timer = 0 # used to regulate when the user slows their bike
 
 pygame.init()
 
@@ -91,6 +92,7 @@ class Bike:
         self.color = color
 
         self.VEL = 1  # velocity - hard-coded to 1 pixel per frame
+        self.v_multiplier = 1 #velocity modifier for when the bike slows down  
         self.alive = True  # used to quickly check the status of the bike
 
     # appends a new Square to the end of the line_pieces. The x and y of the new Square are the previous Square's
@@ -99,8 +101,8 @@ class Bike:
         bike = self.get_bike()
         vel_mult = self.direction.get_multipliers()  # velocity multipliers (x, y)
 
-        self.line_pieces.append(Square(bike.x + (vel_mult[0] * self.VEL),  # new x
-                                       bike.y + (vel_mult[1] * self.VEL),  # new y
+        self.line_pieces.append(Square(bike.x + (vel_mult[0] * self.VEL * self.v_multiplier),  # new x
+                                       bike.y + (vel_mult[1] * self.VEL * self.v_multiplier),  # new y
                                        self.scl,  # same width
                                        self.scl))  # same height
 
@@ -145,7 +147,7 @@ class Bike:
         return self.line_pieces[len(self.line_pieces) - 1]
 
     def get_collision_body(self):
-        return self.line_pieces[:len(bike.line_pieces) - math.floor(bike.scl * 2 / bike.VEL)]
+        return self.line_pieces[:len(bike.line_pieces) - math.floor(bike.scl * 2 / bike.VEL / bike.v_multiplier)]
 
     # print the direction of the bike and positional data (x and y) of all squares
     def print(self):
@@ -213,6 +215,8 @@ clock = pygame.time.Clock()
 # run while not done
 done = False
 
+pressed_down = False
+
 while not done:
 
     for event in pygame.event.get():
@@ -230,11 +234,29 @@ while not done:
             if event.key == pygame.K_LEFT:
                 bike.turn_left()
 
+            # press down to slow the bike
+            if event.key == pygame.K_DOWN:
+                pressed_down = True
+                print(pressed_down)
+
             # pressing esc also closes the window
             if event.key == pygame.K_ESCAPE:
                 done = True
+        elif event.type == pygame.KEYUP:
+            if event.key == pygame.K_DOWN:
+                pressed_down = False
+                bike.v_multiplier = 1
 
-    # advance the bike in the direction it is going
+    # Pressing the down key closes the window 
+    # Starts a timer allowing you to only slow down for a specific amount of time
+    if pressed_down:
+        bike.v_multiplier = .7
+    #     slow_timer = 500
+    # slow_timer -= (1 if slow_timer > 0 else 0)
+    # if slow_timer == 0:
+    #     bike.v_multiplier = 1
+
+    # advance the bike in the direction it is goings
     bike.move()
 
     # if bike uses powerup, do stuff
