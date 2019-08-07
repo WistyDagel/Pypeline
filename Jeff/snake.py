@@ -12,10 +12,10 @@ RED = (255, 50, 50)
 GRID_FG = GRID_BG
 
 # the scale of the grid and distance between cells
-grid_scl = 20  # width & height of each grid cell
-grid_margin = 1  # must be even for pygame line drawing
-grid_width = 20  # 32
-grid_height = 20  # 24
+grid_scl = 18  # width & height of each grid cell (18)
+grid_margin = 0  # must be even for pygame line drawing (1)
+grid_width = 32  # number of cells on the grid's x-axis (32)
+grid_height = 24  # number of cells on the grid's y-axis (24)
 
 clock_spd = 5  # 10
 
@@ -207,7 +207,7 @@ while not done:
 
     # snake.print()
 
-    score = len(snake.pieces)
+    score = math.ceil((len(snake.pieces) / (grid_height * grid_width)) * 100)
 
     snake.check_die(0, screen_width - grid_scl, 0, screen_height - grid_scl)
     if not snake.alive:
