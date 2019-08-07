@@ -1,6 +1,6 @@
-import bike as bike
 import random
 import pygame
+import bike
 import math
 from pygame import Rect
 
@@ -16,13 +16,13 @@ def c_powerup(screen_width, screen_height, bike_scl):
 
 # returns a bike of scale 6 positioned at the center of the screen, going RIGHT
 def c_bike(grid_margin, grid_width, grid_height, grid_cell_scl):
-    return bike(grid_margin + (grid_width - math.ceil(grid_width / 2)) * (grid_cell_scl + grid_margin),
+    return bike.Bike(grid_margin + (grid_width - math.ceil(grid_width / 2)) * (grid_cell_scl + grid_margin),
                 grid_margin + (grid_height - math.ceil(grid_height/2)) * (grid_cell_scl + grid_margin),
-                6, bike.Direction.RIGHT)
+                6, bike.Bike.Direction.RIGHT)
 
 
 # draw the background, grid, and squares
-def draw(screen, GRID_BG, GRID_FG, grid_width, grid_height, grid_margin, grid_cell_scl, screen_width, screen_height, bike_color, powerup_color, powerup):
+def draw(bike, screen, GRID_BG, GRID_FG, grid_width, grid_height, grid_margin, grid_cell_scl, screen_width, screen_height, bike_color, powerup_color, powerup):
     # erase everything
     screen.fill(GRID_BG)
 
@@ -38,10 +38,10 @@ def draw(screen, GRID_BG, GRID_FG, grid_width, grid_height, grid_margin, grid_ce
 
     # bike squares
     for piece in bike.line_pieces:
-        pygame.draw.rect(screen, bike_color, bike)
+        pygame.draw.rect(screen, bike_color, pygame.Rect(piece.x, piece.y, piece.w, piece.h))
 
     # powerup
-    pygame.draw.rect(screen, powerup_color, powerup)
+    pygame.draw.rect(screen, powerup_color, pygame.Rect(powerup.x, powerup.y, powerup.w, powerup.h))
 
     # flip the screen (? not sure why needed ?)
     pygame.display.flip()
