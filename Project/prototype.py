@@ -39,12 +39,18 @@ pygame.display.set_caption('Jeff bike')
 
 
 # represents a square on the grid
-class Square(pygame.Rect):
+class Square():
     def __init__(self, x, y, w, h):
-        super().__init__(x, y, w, h)
+        self.x = x
+        self.y = y
+        self.w = w
+        self.h = h
+
+    def to_rect(self):
+        return pygame.Rect(self.x, self.y, self.w, self.h)
 
     def overlaps(self, other):
-        return True if self.x + self.w > other.x and self.x < other.x + other.w and self.y + self.h > other.y and self.y < other.y + other.h else False
+        return self.to_rect().colliderect(other.to_rect())
 
 
 class Bike:
@@ -207,8 +213,8 @@ while not done:
                 bike.turn_left()
 
             # pressing esc also closes the window
-            if event.key == pygame.K_ESCAPE:
-                done = True
+            # if event.key == pygame.K_ESCAPE:
+            #     done = True
 
     # advance the bike in the direction it is going
     bike.move()
