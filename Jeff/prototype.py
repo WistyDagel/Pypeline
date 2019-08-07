@@ -106,7 +106,9 @@ class Bike:
         # TODO check if line overlaps itself
         # check if bike() overlaps() anything between line_pieces[0] and line_pieces[len(line_pieces) - self.scl]
         if len(self.line_pieces) > self.scl / self.vel:
-
+            for piece in self.line_pieces[:self.scl / self.vel-1]:
+                if head.colliderect(piece):
+                    self.alive = False
 
         # check if line is outside screen
         if head.x < x or head.x > w - self.scl or head.y < y or head.y > h - self.scl:
@@ -164,10 +166,10 @@ def draw():
 
     # bike squares
     for piece in bike.line_pieces:
-        pygame.draw.rect(screen, bike_color, pygame.Rect(piece.x, piece.y, piece.w, piece.h))
+        pygame.draw.rect(screen, bike_color if bike.alive else RED, piece)
 
     # powerup
-    pygame.draw.rect(screen, powerup_color, pygame.Rect(powerup.x, powerup.y, powerup.w, powerup.h))
+    pygame.draw.rect(screen, powerup_color, powerup)
 
     # flip the screen (? not sure why needed ?)
     pygame.display.flip()
