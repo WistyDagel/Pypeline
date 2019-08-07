@@ -1,12 +1,14 @@
 import math
 import random
 import pygame
+from pygame import Rect
 from enum import *
 
 # sample color tuples
 GRID_BG = (0, 0, 0)
 GRID_FG = (40, 140, 160)
 WHITE = (255, 255, 255)
+
 RED = (255, 50, 50)
 GREEN = (50, 255, 50)
 BLUE = (50, 50, 255)
@@ -35,18 +37,6 @@ pygame.init()
 screen = pygame.display.set_mode([screen_width, screen_height])
 
 pygame.display.set_caption('Jeff bike')
-
-
-# represents a square on the grid
-class Square:
-    def __init__(self, x, y, w, h):
-        self.x = x
-        self.y = y
-        self.w = w
-        self.h = h
-
-    def overlaps(self, other):
-        return True if self.x + self.w > other.x and self.x < other.x + other.w and self.y + self.h > other.y and self.y < other.y + other.h else False
 
 
 class Bike:
@@ -78,7 +68,7 @@ class Bike:
     """
     def __init__(self, x: int, y: int, scl: int, direction: Direction):
         self.scl = scl
-        self.line_pieces = [Square(x, y, self.scl, self.scl)]
+        self.line_pieces = [Rect(x, y, self.scl, self.scl)]
         self.direction = direction
 
         self.vel = 1  # velocity - hard-coded to 1 pixel per frame
@@ -90,7 +80,7 @@ class Bike:
         bike = self.bike()
         vel_mult = self.direction.get_multipliers()  # velocity multipliers (x, y)
 
-        self.line_pieces.append(Square(bike.x + (vel_mult[0] * self.vel),  # new x
+        self.line_pieces.append(Rect(bike.x + (vel_mult[0] * self.vel),  # new x
                                        bike.y + (vel_mult[1] * self.vel),  # new y
                                        self.scl,  # same width
                                        self.scl))  # same height
@@ -123,7 +113,7 @@ class Bike:
     # returns true if the bike is overlapping a given square at any point
     # should be used to determine if a given bike should interact with a given powerup
     def use(self, powerup):
-        if self.bike().overlaps(powerup):
+        if self.bike().colliderect(powerup):
             return True
         return False
 
@@ -141,7 +131,7 @@ class Bike:
 # returns a powerup positioned at a random location on the screen
 def c_powerup():
     scale = bike.scl * 1.5
-    powerup = Square(random.randint(0, int(screen_width - scale + 1)),  # random x
+    powerup = Rect(random.randint(0, int(screen_width - scale + 1)),  # random x
                      random.randint(0, int(screen_height - scale + 1)),  # random y
                      scale,  # 50% larger than the bike
                      scale)  # 50% larger than the bike
