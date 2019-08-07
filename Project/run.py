@@ -1,4 +1,4 @@
-import draw as draw
+import Project.draw as draw
 import bike as b
 import PowerUps.minePowerUp as mine
 import PowerUps.nukePowerUp as nuke
@@ -40,6 +40,7 @@ pygame.display.set_caption('Jeff bike')
 # If player chooses the Tron Light Cycle game
     # Calls the draw grid file and passes in constants
 b = draw.c_bike(grid_margin, grid_width, grid_height, grid_cell_scl)
+
 p = draw.c_powerup(screen_width, screen_height, b.scl)
 
 # start the clock (frames)
@@ -85,6 +86,8 @@ while not done:
     # if the bike is dead, regenerate it and the powerup
     if not b.alive:
         b = draw.c_bike(grid_margin, grid_width, grid_height, grid_cell_scl)
+        b2 = draw.c_bike(grid_margin, grid_width, grid_height, grid_cell_scl)
+
         powerup = draw.c_powerup(screen_width, screen_height, b.scl)
         current_spd = CLOCK_SPD
         speed_timer = 0
