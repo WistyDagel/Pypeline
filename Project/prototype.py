@@ -162,10 +162,10 @@ def draw():
 
     # bike squares
     for piece in bike.line_pieces:
-        pygame.draw.rect(screen, bike_color, pygame.Rect(piece.x, piece.y, piece.w, piece.h))
+        pygame.draw.rect(screen, bike_color, bike)
 
     # powerup
-    pygame.draw.rect(screen, powerup_color, pygame.Rect(powerup.x, powerup.y, powerup.w, powerup.h))
+    pygame.draw.rect(screen, powerup_color, powerup)
 
     # flip the screen (? not sure why needed ?)
     pygame.display.flip()
