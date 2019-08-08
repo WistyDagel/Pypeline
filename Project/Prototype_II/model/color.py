@@ -9,3 +9,6 @@ class Color:
     GREEN = (0, 255, 0)
     BLUE = (0, 0, 255)
     PURPLE = (102, 45, 145)
+
+    def __init__(self, color):
+        self.color = color
