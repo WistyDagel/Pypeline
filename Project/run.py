@@ -1,4 +1,4 @@
-import draw as draw
+import Project.draw as draw
 import bike as b
 import PowerUps.minePowerUp as mine
 import PowerUps.nukePowerUp as nuke
@@ -40,12 +40,15 @@ pygame.display.set_caption('Jeff bike')
 # If player chooses the Tron Light Cycle game
     # Calls the draw grid file and passes in constants
 b = draw.c_bike(grid_margin, grid_width, grid_height, grid_cell_scl)
+
 p = draw.c_powerup(screen_width, screen_height, b.scl)
 
 # start the clock (frames)
 clock = pygame.time.Clock()
 # run while not done
 done = False
+
+pressed_down = False
 
 while not done:
 
@@ -59,14 +62,32 @@ while not done:
             # bike controls
             # press right to turn right
             if event.key == pygame.K_RIGHT:
-                b.turn_right()
+                bike.turn_right()
             # press left to turn left
             if event.key == pygame.K_LEFT:
-                b.turn_left()
+                bike.turn_left()
+
+            # press down to slow the bike
+            if event.key == pygame.K_DOWN:
+                pressed_down = True
+                print(pressed_down)
 
             # pressing esc also closes the window
             if event.key == pygame.K_ESCAPE:
                 done = True
+        elif event.type == pygame.KEYUP:
+            if event.key == pygame.K_DOWN:
+                pressed_down = False
+                bike.v_multiplier = 1
+
+    # Pressing the down key closes the window 
+    # Starts a timer allowing you to only slow down for a specific amount of time
+    if pressed_down:
+        bike.v_multiplier = .7
+    #     slow_timer = 500
+    # slow_timer -= (1 if slow_timer > 0 else 0)
+    # if slow_timer == 0:
+    #     bike.v_multiplier = 1
 
     # advance the bike in the direction it is going
     b.move()
@@ -85,6 +106,8 @@ while not done:
     # if the bike is dead, regenerate it and the powerup
     if not b.alive:
         b = draw.c_bike(grid_margin, grid_width, grid_height, grid_cell_scl)
+        b2 = draw.c_bike(grid_margin, grid_width, grid_height, grid_cell_scl)
+
         powerup = draw.c_powerup(screen_width, screen_height, b.scl)
         current_spd = CLOCK_SPD
         speed_timer = 0
