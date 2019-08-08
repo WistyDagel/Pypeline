@@ -1,3 +1,3 @@
-from Project.Prototype_II.color import Color
+from color import Color
 
 print(Color.PURPLE)
