@@ -1,4 +1,4 @@
-from model.color import Color
+from color import Color
 
 print("tron.py")
 print(Color.PURPLE)
