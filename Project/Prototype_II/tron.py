@@ -34,23 +34,22 @@ screen = pygame.display.set_mode([screen_width, screen_height])
 
 pygame.display.set_caption('Prototype II')
 
+
 #### TEMPORARY ####
 
 # returns a powerup positioned at a random location on the screen
 def c_powerup():
-    scale = bike.scl * 1.5
-    return s.Square(random.randint(0, int(screen_width - scale + 1)),  # random x
-                  random.randint(0, int(screen_height - scale + 1)),  # random y
-                  scale,  # 50% larger than the bike
-                  scale)  # 50% larger than the bike
+    return s.Square(random.randint(0, int(screen_width - bike.weight + 1)),  # random x
+                  random.randint(0, int(screen_height - bike.weight + 1)),  # random y
+                  bike.weight * 1.5,  # 50% larger than the bike
+                  bike.weight * 1.5)  # 50% larger than the bike
 
 
 # returns a bike of scale 6 positioned at the center of the screen, going RIGHT
 def c_bike():
     return b.Bike(grid_margin + (grid_width - math.ceil(grid_width / 2)) * (grid_cell_scl + grid_margin),
                 grid_margin + (grid_height - math.ceil(grid_height/2)) * (grid_cell_scl + grid_margin),
-                6, b.Bike.Direction.RIGHT, bike_color)
-
+                b.Bike.Direction.RIGHT, bike_color)
 
 # draw the background, grid, and squares
 def draw():
@@ -68,8 +67,8 @@ def draw():
                          (screen_width, grid_margin / 2 + (i * (grid_cell_scl + grid_margin))), grid_margin)
 
     # bike squares
-    for piece in bike.line_pieces:
-        pygame.draw.rect(screen, bike.color, piece.to_rect())
+    for rect in bike.line_pieces:
+        pygame.draw.rect(screen, bike.color, rect.to_rect())
 
     # powerup
     pygame.draw.rect(screen, powerup_color, powerup.to_rect())
@@ -79,8 +78,10 @@ def draw():
 
 #### /TEMPORARY ####
 
+
 # instantiate a bike object
 bike = c_bike()
+
 # instantiate a powerup that does not collide with the bike (if no spaces are available, it stops after 100 iterations)
 for i in range(100):
     valid = True
@@ -110,10 +111,10 @@ while not done:
             # bike controls
             # press right to turn right
             if event.key == pygame.K_RIGHT:
-                bike.turn_right()
+                bike.turn(1)
             # press left to turn left
             if event.key == pygame.K_LEFT:
-                bike.turn_left()
+                bike.turn(-1)
 
             # press down to slow the bike
             if event.key == pygame.K_DOWN:
