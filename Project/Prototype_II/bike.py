@@ -23,7 +23,7 @@ class Bike:
                 (-1, 0),  # Left (2)
                 (0, -1),  # Up (3)
             )
-            return dir_vel[self.value - 1]
+            return dir_vel[self.value]
 
     """
     :param x - the x position of the bike at the start of the game
@@ -84,7 +84,6 @@ class Bike:
                 
             
             self.line_pieces.append(square.Square(x, y, w, h))
-            # self.line_pieces.insert(0, square.Square(x, y, w, h))
                                        
             self._turn = 0
         else:
@@ -96,25 +95,21 @@ class Bike:
 
 
     # sets the direction to the Direction of value + index % 4 
-    # when calling this method, you MUST specify which direction to cycle through the enum, 
-    # using -1 for left and 1 for right. 0 is not allowed
-    def turn(self, value: int):
-        if not value == -1 and not value == 1:
-            raise ValueError('value must be -1 or 1')
-        self._turn = value
+    def turn(self, index: int):
+        self._turn = index
         self.direction = self.Direction((self.direction.value + self._turn) % len(self.Direction))
 
-    # check if the bike overlaps its previous squares and
+    # check if the bike overlaps its line and
     # check if the bike is outside the play area (defined by the x, y, w, h params)
     def check_die(self, x, y, w, h):
-        bike = self.get_bike()
-        for sq in self.get_line():
-            if bike.overlaps(sq):
+        head = self.get_bike()
+        for rect in self.get_line():
+            if head.overlaps(rect):
                 self.alive = False
                 break
 
-        # check if square is outside screen
-        if bike.x < x or bike.x + bike.w > w or bike.y < y or bike.y + bike.h > h:
+        # check if line is outside screen
+        if head.x < x or head.x + head.w > w or head.y < y or head.y + head.h > h:
             self.alive = False
 
     # returns true if the bike is overlapping a given square at any point
@@ -124,14 +119,13 @@ class Bike:
             return True
         return False
 
-    # returns the last Square in line_pieces
+    # returns the last Square in line_pieces. For this prototype, that is all a bike is
     def get_bike(self):
         return self.line_pieces[-1]
         # return self.line_pieces[0]
     
     def get_line(self):
         return self.line_pieces[0:-1]
-        # return self.line_pieces[1:0]  # BROKEN
 
     def eff_spd(self):
         return self.SPD * self.s_multiplier

@@ -6,8 +6,6 @@ import pygame
 import math
 import random
 
-import powerUps as pu
-
 
 grid_cell_scl = 20  # width & height (scale) of each grid cell
 grid_margin = 1  # amount of space on all sides of cells (must be odd for pygame line drawing)
@@ -128,7 +126,7 @@ while not done:
         elif event.type == pygame.KEYUP:
             if event.key == pygame.K_DOWN:
                 pressed_down = False
-                bike.v_multiplier = 1
+                bike.s_multiplier = 1
 
     # Pressing the down key closes the window 
     # Starts a timer allowing you to only slow down for a specific amount of time
@@ -144,7 +142,7 @@ while not done:
 
     # if bike uses powerup, do stuff
     if bike.use(powerup):
-        powerup = pu.PowerUps.speed_powerUp  # create a new powerup
+        powerup = c_powerup()  # create a new powerup
         current_spd = CLOCK_SPD * 3  # multiply the current clock speed
         speed_timer = 500  # set the timer to an arbitrary number
     speed_timer -= (1 if speed_timer > 0 else 0)  # count the timer down every frame unless it is 0
