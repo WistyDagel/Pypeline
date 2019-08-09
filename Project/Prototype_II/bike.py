@@ -23,7 +23,7 @@ class Bike:
                 (-1, 0),  # Left (2)
                 (0, -1),  # Up (3)
             )
-            return dir_vel[self.value]
+            return dir_vel[self.value - 1]
 
     """
     :param x - the x position of the bike at the start of the game
