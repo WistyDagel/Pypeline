@@ -165,14 +165,14 @@ class Bike:
 
         if val == 0:
             x = x + w
-            w = 1
+            w = 0
         if val == 1:
             y = y + h
-            h = 1
+            h = 0
         if val == 2:
-            w = 1
+            w = 0
         if val == 3:
-            h = 1
+            h = 0
 
         return square.Square(x, y, w, h)
 
