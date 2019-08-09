@@ -119,7 +119,6 @@ while not done:
             # press down to slow the bike
             if event.key == pygame.K_DOWN:
                 pressed_down = True
-                print(pressed_down)
 
             # pressing esc also closes the window
             if event.key == pygame.K_ESCAPE:
