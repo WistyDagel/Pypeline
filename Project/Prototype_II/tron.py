@@ -53,8 +53,7 @@ def draw():
 
     # bike squares
     for bike in bikes:
-        for rect in bike.line_pieces:
-            pygame.draw.rect(screen, bike.color, rect.to_rect())
+        bike.draw(screen)
 
     # powerup
     if (datetime.time.second == 0):
@@ -64,8 +63,6 @@ def draw():
 
     # flip the screen (? not sure why needed ?)
     pygame.display.flip()
-
-#### /TEMPORARY ####
 
 
 # instantiate a bike object
