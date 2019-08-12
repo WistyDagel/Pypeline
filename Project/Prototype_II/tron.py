@@ -1,10 +1,12 @@
 import bike as b
 import square as s
 import color as c
+import powerUps as pu
 
 import pygame
 import math
 import random
+import datetime
 
 
 grid_cell_scl = 20  # width & height (scale) of each grid cell
@@ -34,17 +36,6 @@ screen = pygame.display.set_mode([screen_width, screen_height])
 
 pygame.display.set_caption('Prototype II')
 
-
-#### TEMPORARY ####
-
-# returns a powerup positioned at a random location on the screen
-# def c_powerup():
-#     return s.Square(random.randint(0, int(screen_width - bike.weight + 1)),  # random x
-#                   random.randint(0, int(screen_height - bike.weight + 1)),  # random y
-#                   bike.weight * 1.5,  # 50% larger than the bike
-#                   bike.weight * 1.5)  # 50% larger than the bike
-
-
 # draw the background, grid, and squares
 def draw():
     # erase everything
@@ -62,21 +53,23 @@ def draw():
 
     # bike squares
     for bike in bikes:
-        for rect in bike.line_pieces:
-            pygame.draw.rect(screen, bike.color, rect.to_rect())
+        bike.draw(screen)
 
     # powerup
-    # pygame.draw.rect(screen, powerup_color, powerup.to_rect())
+    if (datetime.time.second == 0):
+        for powerup in powerups:
+            pygame.draw.rect(screen, powerup.returnColor(), powerup.speed_powerUp().to_rect())
+            break
 
     # flip the screen (? not sure why needed ?)
     pygame.display.flip()
-
-#### /TEMPORARY ####
 
 
 # instantiate a bike object
 bikes = [b.Bike(0, 0, b.Bike.Direction.RIGHT, c.PURPLE, pygame.K_a, pygame.K_s, pygame.K_d), 
          b.Bike(screen_width - b.Bike.WEIGHT, screen_height - b.Bike.WEIGHT, b.Bike.Direction.LEFT, c.YELLOW, pygame.K_LEFT, pygame.K_DOWN, pygame.K_RIGHT)]           
+
+powerups = [pu.PowerUps(9, screen_width, screen_height, (0, 255, 0))]
 
 # start the clock (frames)
 clock = pygame.time.Clock()
