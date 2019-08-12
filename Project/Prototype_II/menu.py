@@ -49,7 +49,7 @@ def main_menu():
                         menu = False
 
         screen.fill(BLACK)
-        title=text_render("TRON", font, 90, BLUE)
+        title = text_render("TRON", font, 90, BLUE)
         if selected == "start":
             start_text = text_render("START", font, 50, WHITE)
         else:
@@ -58,10 +58,11 @@ def main_menu():
             quit_text = text_render("QUIT", font, 50, WHITE)
         else:
             quit_text = text_render("QUIT", font, 50, YELLOW)
+        author = 
     
-        title_rect=title.get_rect()
-        start_rect=start_text.get_rect()
-        quit_rect=quit_text.get_rect()
+        title_rect = title.get_rect()
+        start_rect = start_text.get_rect()
+        quit_rect = quit_text.get_rect()
     
         # Main Menu Text
         screen.blit(title, (screen_width/2 - (title_rect[2]/2), 80))
