@@ -1,14 +1,22 @@
-import bike as bike
 import pygame
-import color as color
+import color
 import square
+import random
 
 class PowerUps:
-    def __init__(self, b: bike, x: int, y: int, scl: int, c: color):
-        self.scl = scl
-        self.b = b
+    def __init__(self, powerupWeight: int, x: int, y: int, c: color):
+        self.weight = powerupWeight
+        self.x = x
+        self.y = y
         self.c = c
-        self.powerUpSqaure = [square.Square(x, y, self.scl, self.scl)]
 
     def speed_powerUp(self):
-        return self.powerUpSqaure
+        sPowerUp = square.Square(random.randint(0, int(self.x - self.weight + 1)),  # random x
+            random.randint(0, int(self.y - self.weight + 1)),  # random y
+            self.weight * 1.5,  # 50% larger than the bike
+            self.weight * 1.5)  # 50% larger than the bike
+
+        return sPowerUp
+
+    def returnColor(self):
+        return self.c
