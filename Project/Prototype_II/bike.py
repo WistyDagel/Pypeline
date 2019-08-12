@@ -3,6 +3,7 @@ import square
 
 import math
 from enum import IntEnum
+import pygame
 
 class Bike:
     WEIGHT = 6  # weight - the width and height of each square at it's lowest point
@@ -179,3 +180,7 @@ class Bike:
 
     def eff_spd(self):
         return self.SPD * self.s_multiplier
+
+    def draw(self, screen):
+        for rect in self.line_pieces:
+            pygame.draw.rect(screen, self.color, rect.to_rect())
