@@ -6,8 +6,6 @@ import pygame
 import math
 import random
 
-import powerUps as pu
-
 
 grid_cell_scl = 20  # width & height (scale) of each grid cell
 grid_margin = 1  # amount of space on all sides of cells (must be odd for pygame line drawing)
@@ -40,18 +38,12 @@ pygame.display.set_caption('Prototype II')
 #### TEMPORARY ####
 
 # returns a powerup positioned at a random location on the screen
-def c_powerup():
-    return s.Square(random.randint(0, int(screen_width - bike.weight + 1)),  # random x
-                  random.randint(0, int(screen_height - bike.weight + 1)),  # random y
-                  bike.weight * 1.5,  # 50% larger than the bike
-                  bike.weight * 1.5)  # 50% larger than the bike
+# def c_powerup():
+#     return s.Square(random.randint(0, int(screen_width - bike.weight + 1)),  # random x
+#                   random.randint(0, int(screen_height - bike.weight + 1)),  # random y
+#                   bike.weight * 1.5,  # 50% larger than the bike
+#                   bike.weight * 1.5)  # 50% larger than the bike
 
-
-# returns a bike of scale 6 positioned at the center of the screen, going RIGHT
-def c_bike():
-    return b.Bike(grid_margin + (grid_width - math.ceil(grid_width / 2)) * (grid_cell_scl + grid_margin),
-                grid_margin + (grid_height - math.ceil(grid_height/2)) * (grid_cell_scl + grid_margin),
-                b.Bike.Direction.RIGHT, bike_color)
 
 # draw the background, grid, and squares
 def draw():
@@ -69,11 +61,12 @@ def draw():
                          (screen_width, grid_margin / 2 + (i * (grid_cell_scl + grid_margin))), grid_margin)
 
     # bike squares
-    for rect in bike.line_pieces:
-        pygame.draw.rect(screen, bike.color, rect.to_rect())
+    for bike in bikes:
+        for rect in bike.line_pieces:
+            pygame.draw.rect(screen, bike.color, rect.to_rect())
 
     # powerup
-    pygame.draw.rect(screen, powerup_color, powerup.to_rect())
+    # pygame.draw.rect(screen, powerup_color, powerup.to_rect())
 
     # flip the screen (? not sure why needed ?)
     pygame.display.flip()
@@ -82,17 +75,8 @@ def draw():
 
 
 # instantiate a bike object
-bike = c_bike()
-
-# instantiate a powerup that does not collide with the bike (if no spaces are available, it stops after 100 iterations)
-for i in range(100):
-    valid = True
-    powerup = c_powerup()
-    for piece in bike.line_pieces:
-        if powerup.overlaps(piece):
-            valid = False
-    if not valid:
-        break
+bikes = [b.Bike(0, 0, b.Bike.Direction.RIGHT, c.PURPLE, pygame.K_a, pygame.K_s, pygame.K_d), 
+         b.Bike(screen_width - b.Bike.WEIGHT, screen_height - b.Bike.WEIGHT, b.Bike.Direction.LEFT, c.YELLOW, pygame.K_LEFT, pygame.K_DOWN, pygame.K_RIGHT)]           
 
 # start the clock (frames)
 clock = pygame.time.Clock()
@@ -112,53 +96,45 @@ while not done:
         if event.type == pygame.KEYDOWN:
             # bike controls
             # press right to turn right
-            if event.key == pygame.K_RIGHT:
-                bike.turn(1)
-            # press left to turn left
-            if event.key == pygame.K_LEFT:
-                bike.turn(-1)
+            for bike in bikes:
+                if event.key == bike.right_key:
+                    bike.turn(1)
+                elif event.key == bike.left_key:
+                    bike.turn(-1)
 
-            # press down to slow the bike
-            if event.key == pygame.K_DOWN:
-                pressed_down = True
+                # # press down to slow the bike
+                # if event.key == pygame.K_DOWN:
+                #     pressed_down = True
 
             # pressing esc also closes the window
             if event.key == pygame.K_ESCAPE:
                 done = True
-        elif event.type == pygame.KEYUP:
-            if event.key == pygame.K_DOWN:
-                pressed_down = False
-                bike.v_multiplier = 1
+
+        # elif event.type == pygame.KEYUP:
+        #     if event.key == pygame.K_DOWN:
+        #         pressed_down = False
+        #         bike.s_multiplier = 1
 
     # Pressing the down key closes the window 
     # Starts a timer allowing you to only slow down for a specific amount of time
-    if pressed_down:
-        bike.s_multiplier = .7
+    # if pressed_down:
+    #     bike.s_multiplier = .6
     #     slow_timer = 500
     # slow_timer -= (1 if slow_timer > 0 else 0)
     # if slow_timer == 0:
     #     bike.v_multiplier = 1
 
     # advance the bike in the direction it is goings
-    bike.move()
+    for bike in bikes:
+        bike.move()
 
-    # if bike uses powerup, do stuff
-    if bike.use(powerup):
-        powerup = pu.PowerUps.speed_powerUp  # create a new powerup
-        current_spd = CLOCK_SPD * 3  # multiply the current clock speed
-        speed_timer = 500  # set the timer to an arbitrary number
-    speed_timer -= (1 if speed_timer > 0 else 0)  # count the timer down every frame unless it is 0
-    if speed_timer == 0:  # if the timer is done running, set the current speed back to the clock speed
-        current_spd = CLOCK_SPD  # this technically runs every frame, except when timer > 0
+        # make the bike check if it is 'dead' (see method declaration for more info)
+        bike.check_die(0, 0, screen_width, screen_height)
 
-    # make the bike check if it is 'dead' (see method declaration for more info)
-    bike.check_die(0, 0, screen_width, screen_height)
-    # if the bike is dead, regenerate it and the powerup
-    if not bike.alive:
-        bike = c_bike()
-        powerup = c_powerup()
-        current_spd = CLOCK_SPD
-        speed_timer = 0
+        for other in bikes:
+            if bike is not other and bike.touches(other.line_pieces):
+                bike.alive = False
+
 
     # calling the draw method after all the positioning and checking is done
     draw()

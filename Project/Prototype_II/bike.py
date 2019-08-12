@@ -5,6 +5,7 @@ import math
 from enum import IntEnum
 
 class Bike:
+    WEIGHT = 6  # weight - the width and height of each square at it's lowest point
     # represents each of the 4 possible directions the bike may go
     # This is here because the bike should know it's own state of direction
     class Direction(IntEnum):
@@ -23,7 +24,7 @@ class Bike:
                 (-1, 0),  # Left (2)
                 (0, -1),  # Up (3)
             )
-            return dir_vel[self.value - 1]
+            return dir_vel[self.value]
 
     """
     :param x - the x position of the bike at the start of the game
@@ -31,16 +32,29 @@ class Bike:
     :param scl - the size of each Piece of the line (scale)
     :param direction - the Direction that the bike will be going at the start of the game
     """
-    def __init__(self, x: int, y: int, direction: Direction, color = color.WHITE):
-        self.weight = 6  # weight - the width and height of each square at it's lowest point
+    def __init__(self, x: int, y: int, direction: Direction, color, left_key, slow_key, right_key):
         self.SPD = 1  # speed - hard-coded to 1 pixel per frame
         self.s_multiplier = 1 # speed modifier for when the bike slows down  
         self.alive = True  # used to quickly check the status of the bike
         self._turn = False  # used to determine if a new rectangle should be inserted into the list
         
-        self.line_pieces = [square.Square(x, y, self.weight, self.weight)]
-        self.direction = direction
+        self.start_x = x
+        self.start_y = y
+        self.start_dir = direction
+        self.direction = self.start_dir
         self.color = color
+        self.line_pieces = []
+
+        self.left_key = left_key
+        self.slow_key = slow_key
+        self.right_key = right_key
+
+        self.reset()
+    
+    def reset(self):
+        self.line_pieces = [square.Square(self.start_x, self.start_y, Bike.WEIGHT, Bike.WEIGHT)]
+        self.direction = self.start_dir
+        self.alive = True
 
     # appends a new Square to the end of the line_pieces. The x and y of the new Square are the previous Square's
     # x and y plus the bike's directional speed
@@ -57,30 +71,30 @@ class Bike:
                     x = x - 0
                     y = y - bike.h
                 if dir_val == 1:  # DOWN
-                    x = x - self.weight
+                    x = x - Bike.WEIGHT
                     y = y - 0
                 if dir_val == 2:  # LEFT
                     x = x - bike.w
-                    y = y - self.weight
+                    y = y - Bike.WEIGHT
                 if dir_val == 3:  # UP
                     x = x - bike.w
-                    y = y - self.weight
+                    y = y - Bike.WEIGHT
             else:  # counter-clockwise rotation of direction (must be -1)
                 if dir_val == 0:
                     x = x - 0
-                    y = y - self.weight
+                    y = y - Bike.WEIGHT
                 if dir_val == 1:
                     x = x - bike.w
                     y = y - 0
                 if dir_val == 2:
-                    x = x - self.weight
+                    x = x - Bike.WEIGHT
                     y = y - bike.h
                 if dir_val == 3:
-                    x = x - self.weight
+                    x = x - Bike.WEIGHT
                     y = y - bike.h
 
-            w = abs(spd_mult[1]) * self.weight
-            h = abs(spd_mult[0]) * self.weight
+            w = abs(spd_mult[1]) * Bike.WEIGHT
+            h = abs(spd_mult[0]) * Bike.WEIGHT
                 
             
             self.line_pieces.append(square.Square(x, y, w, h))
@@ -108,21 +122,29 @@ class Bike:
     # check if the bike is outside the play area (defined by the x, y, w, h params)
     def check_die(self, x, y, w, h):
         bike = self.get_bike()
-        for sq in self.get_line():
-            if bike.overlaps(sq):
-                self.alive = False
-                break
+        if self.touches(self.get_line()[:-1]):
+            self.alive = False
 
         # check if square is outside screen
         if bike.x < x or bike.x + bike.w > w or bike.y < y or bike.y + bike.h > h:
             self.alive = False
 
+        if not self.alive:
+            self.reset()
+    
+    # check if the foremost 1-pixel wide edge of the bike is in contact with a list of squares
+    def touches(self, other):
+        for piece in other:
+            if self.get_leading_edge().overlaps(piece):
+                return True
+        return False
+
     # returns true if the bike is overlapping a given square at any point
     # should be used to determine if a given bike should interact with a given powerup
-    def use(self, powerup):
-        if self.get_bike().overlaps(powerup):
-            return True
-        return False
+    # def use(self, powerup):
+    #     if self.get_bike().overlaps(powerup):
+    #         return True
+    #     return False
 
     # returns the last Square in line_pieces
     def get_bike(self):
@@ -132,6 +154,28 @@ class Bike:
     def get_line(self):
         return self.line_pieces[0:-1]
         # return self.line_pieces[1:0]  # BROKEN
+    
+    def get_leading_edge(self):
+        val = self.direction.value
+        bike = self.get_bike()
+        x = bike.x
+        y = bike.y
+        w = bike.w
+        h = bike.h
+
+        if val == 0:
+            x = x + w
+            w = 0
+        if val == 1:
+            y = y + h
+            h = 0
+        if val == 2:
+            w = 0
+        if val == 3:
+            h = 0
+
+        return square.Square(x, y, w, h)
+
 
     def eff_spd(self):
         return self.SPD * self.s_multiplier
