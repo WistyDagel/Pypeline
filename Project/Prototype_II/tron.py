@@ -136,7 +136,7 @@ while not done:
 
     for powerup in powerups:
         for bike in bikes:
-            if powerup.collides(bike):
+            if (powerup.collides(bike)):
                 # bike.apply_powerup(powerup.type)
                 powerups.remove(powerup)
 
