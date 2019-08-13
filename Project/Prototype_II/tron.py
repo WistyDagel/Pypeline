@@ -17,7 +17,7 @@ grid_height = 30  # grid height cell count
 screen_width = ((grid_margin + grid_cell_scl) * grid_width) + grid_margin  # width of the GUI window
 screen_height = ((grid_margin + grid_cell_scl) * grid_height) + grid_margin  # height of the GUI window
 
-CLOCK_SPD = 50  # the base clock speed, or arbitrary framerate - keep at 100
+CLOCK_SPD = 100  # the maximum frames/second
 current_spd = CLOCK_SPD  # the current speed of the game (may change)
 speed_timer = 0  # used to regulate when the current speed is changed
 slow_timer = 0 # used to regulate when the user slows their bike
@@ -59,7 +59,7 @@ def draw():
 
     # powerup
     for powerup in powerups:
-        pygame.draw.rect(screen, c.GREEN, powerup.to_rect())
+        pygame.draw.rect(screen, powerup.color, powerup.to_rect())
 
     # flip the screen (? not sure why needed ?)
     pygame.display.flip()
@@ -69,7 +69,7 @@ def draw():
 bikes = [b.Bike(0, 0, b.Bike.Direction.RIGHT, c.PURPLE, pygame.K_a, pygame.K_s, pygame.K_d), 
          b.Bike(screen_width - b.Bike.WEIGHT, screen_height - b.Bike.WEIGHT, b.Bike.Direction.LEFT, c.YELLOW, pygame.K_LEFT, pygame.K_DOWN, pygame.K_RIGHT)]           
 
-powerups = [pu.PowerUps.speed_powerUp(screen_width, screen_height)]
+powerups = [pu.PowerUps(screen_width, screen_height, pu.PowerUps.Type.SPEED)]
 
 # start the clock (frames)
 clock = pygame.time.Clock()
@@ -130,8 +130,15 @@ while not done:
 
                 
     now = datetime.datetime.now()
-    if (clock.get_ticks() % 1000 == 0):
-        powerups.append(pu.PowerUps.speed_powerUp(screen_width, screen_height))
+    delay = 10  # every x seconds, create a powerup
+    if (pygame.time.get_ticks() % (CLOCK_SPD * delay) == 0):
+        powerups.append(pu.PowerUps(screen_width, screen_height, pu.PowerUps.Type.SPEED))
+
+    for powerup in powerups:
+        for bike in bikes:
+            if powerup.collides(bike):
+                # bike.apply_powerup(powerup.type)
+                powerups.remove(powerup)
 
     # calling the draw method after all the positioning and checking is done
     draw()
