@@ -30,6 +30,8 @@ GRID_BG = c.BLACK
 GRID_FG = (40, 140, 160)
 
 # initialize pygame module
+# def initialize():
+
 pygame.init()
 
 screen = pygame.display.set_mode([screen_width, screen_height])
@@ -56,10 +58,8 @@ def draw():
         bike.draw(screen)
 
     # powerup
-    if (datetime.time.second == 0):
-        for powerup in powerups:
-            pygame.draw.rect(screen, powerup.returnColor(), powerup.speed_powerUp().to_rect())
-            break
+    for powerup in powerups:
+        pygame.draw.rect(screen, c.GREEN, powerup.to_rect())
 
     # flip the screen (? not sure why needed ?)
     pygame.display.flip()
@@ -69,7 +69,7 @@ def draw():
 bikes = [b.Bike(0, 0, b.Bike.Direction.RIGHT, c.PURPLE, pygame.K_a, pygame.K_s, pygame.K_d), 
          b.Bike(screen_width - b.Bike.WEIGHT, screen_height - b.Bike.WEIGHT, b.Bike.Direction.LEFT, c.YELLOW, pygame.K_LEFT, pygame.K_DOWN, pygame.K_RIGHT)]           
 
-powerups = [pu.PowerUps(9, screen_width, screen_height, (0, 255, 0))]
+powerups = [pu.PowerUps.speed_powerUp(screen_width, screen_height)]
 
 # start the clock (frames)
 clock = pygame.time.Clock()
@@ -128,6 +128,10 @@ while not done:
             if bike is not other and bike.touches(other.line_pieces):
                 bike.alive = False
 
+                
+    now = datetime.datetime.now()
+    if (clock.get_ticks() % 1000 == 0):
+        powerups.append(pu.PowerUps.speed_powerUp(screen_width, screen_height))
 
     # calling the draw method after all the positioning and checking is done
     draw()

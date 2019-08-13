@@ -1,4 +1,5 @@
 import pygame, sys, color
+# import tron
 from pygame.locals import *
 
 pygame.init()
@@ -44,6 +45,7 @@ def main_menu():
                     selected = "quit"
                 if event.key == pygame.K_RETURN:
                     if selected == "start":
+                        tron.initialize()
                         print("Start")
                     if selected == "quit":
                         menu = False
@@ -58,7 +60,6 @@ def main_menu():
             quit_text = text_render("QUIT", font, 50, WHITE)
         else:
             quit_text = text_render("QUIT", font, 50, YELLOW)
-        author = 
     
         title_rect = title.get_rect()
         start_rect = start_text.get_rect()
