@@ -79,7 +79,7 @@ done = False
 pressed_down = False
 
 while not done:
-
+ 
     for event in pygame.event.get():
         # click the 'X' to close the window
         if event.type == pygame.QUIT:
