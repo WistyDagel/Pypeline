@@ -30,6 +30,8 @@ GRID_BG = c.BLACK
 GRID_FG = (40, 140, 160)
 
 # initialize pygame module
+# def initialize():
+
 pygame.init()
 
 screen = pygame.display.set_mode([screen_width, screen_height])
