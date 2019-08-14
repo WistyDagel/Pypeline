@@ -26,7 +26,8 @@ powerup_color = R
 # GRID_FG = GRID_BG
 
 #Font
-font = "Assets/TRON.TTF"
+font = "Project/Prototype_II/Assets/TRON.TTF"
+
 
 #time
 time = 100
