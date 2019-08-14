@@ -1,16 +1,20 @@
-import pygame, sys, color
-import bike as b
-import square as s
-import color as c
-import powerUps as pu
+# 
+# 
+# DONT WORK IN THIS FILE
+# 
+# import pygame, sys, color
+# import bike as b
+# import square as s
+# import color as c
+# import powerUps as pu
 
-import pygame
-import math
-import random
-import datetime
+# import pygame
+# import math
+# import random
+# import datetime
 
-# import tron
-from pygame.locals import *
+# # import tron
+# from pygame.locals import *
 
 pygame.init()
 
@@ -133,97 +137,106 @@ def main_menu():
         else:
             quit_text = text_render("QUIT", font, 50, WHITE)
     
-        title_rect = title.get_rect()
-        start_rect = start_text.get_rect()
-        quit_rect = quit_text.get_rect()
+#         title_rect = title.get_rect()
+#         start_rect = start_text.get_rect()
+#         quit_rect = quit_text.get_rect()
     
-        # Main Menu Text
-        screen.blit(title, (screen_width/2 - (title_rect[2]/2), 80))
-        screen.blit(start_text, (screen_width/2 - (start_rect[2]/2), 300))
-        screen.blit(quit_text, (screen_width/2 - (quit_rect[2]/2), 380))
-        pygame.display.update()
-        clock.tick(FPS)
-        pygame.display.set_caption("Main Menu")
+#         # Main Menu Text
+#         screen.blit(title, (screen_width/2 - (title_rect[2]/2), 80))
+#         screen.blit(start_text, (screen_width/2 - (start_rect[2]/2), 300))
+#         screen.blit(quit_text, (screen_width/2 - (quit_rect[2]/2), 380))
+#         pygame.display.update()
+#         clock.tick(FPS)
+#         pygame.display.set_caption("Main Menu")
 
-def game_run():
-    # run while not done
-    done = False
+# def game_run():
+#     # run while not done
+#     done = False
 
-    pressed_down = False
+#     pressed_down = False
 
-    global CLOCK_SPD
-    global current_spd
-
-    while not done:
+#     global CLOCK_SPD
+#     global current_spd
+#     global duration_timer
     
-            for event in pygame.event.get():
-                # click the 'X' to close the window
-                if event.type == pygame.QUIT:
-                    done = True
+#     while not done:
+    
+#         for event in pygame.event.get():
+#             # click the 'X' to close the window
+#             if event.type == pygame.QUIT:
+#                 done = True
 
-                # key press events
-                if event.type == pygame.KEYDOWN:
-                    # bike controls
-                    # press right to turn right
-                    for bike in bikes:
-                        if event.key == bike.right_key:
-                            bike.turn(1)
-                        elif event.key == bike.left_key:
-                            bike.turn(-1)
+#             # key press events
+#             if event.type == pygame.KEYDOWN:
+#                 # bike controls
+#                 # press right to turn right
+#                 for bike in bikes:
+#                     if event.key == bike.right_key:
+#                         bike.turn(1)
+#                     elif event.key == bike.left_key:
+#                         bike.turn(-1)
 
-                        # # press down to slow the bike
-                        # if event.key == pygame.K_DOWN:
-                        #     pressed_down = True
+#                     # # press down to slow the bike
+#                     # if event.key == pygame.K_DOWN:
+#                     #     pressed_down = True
 
-                    # pressing esc also closes the window
-                    if event.key == pygame.K_ESCAPE:
-                        done = True
+#                 # pressing esc also closes the window
+#                 if event.key == pygame.K_ESCAPE:
+#                     done = True
 
-                # elif event.type == pygame.KEYUP:
-                #     if event.key == pygame.K_DOWN:
-                #         pressed_down = False
-                #         bike.s_multiplier = 1
+#             # elif event.type == pygame.KEYUP:
+#             #     if event.key == pygame.K_DOWN:
+#             #         pressed_down = False
+#             #         bike.s_multiplier = 1
 
-            # Pressing the down key closes the window 
-            # Starts a timer allowing you to only slow down for a specific amount of time
-            # if pressed_down:
-            #     bike.s_multiplier = .6
-            #     slow_timer = 500
-            # slow_timer -= (1 if slow_timer > 0 else 0)
-            # if slow_timer == 0:
-            #     bike.v_multiplier = 1
+#         # Pressing the down key closes the window 
+#         # Starts a timer allowing you to only slow down for a specific amount of time
+#         # if pressed_down:
+#         #     bike.s_multiplier = .6
+#         #     slow_timer = 500
+#         # slow_timer -= (1 if slow_timer > 0 else 0)
+#         # if slow_timer == 0:
+#         #     bike.v_multiplier = 1
 
-            # advance the bike in the direction it is goings
-            for bike in bikes:
-                bike.move()
+#         # advance the bike in the direction it is goings
+#         for bike in bikes:
+#             bike.move()
 
-                # make the bike check if it is 'dead' (see method declaration for more info)
-                bike.check_die(0, 0, screen_width, screen_height)
+#             # make the bike check if it is 'dead' (see method declaration for more info)
+#             bike.check_die(0, 0, screen_width, screen_height)
 
-                for other in bikes:
-                    if bike is not other and bike.touches(other.line_pieces):
-                        bike.alive = False
+#             for other in bikes:
+#                 if bike is not other and bike.touches(other.line_pieces):
+#                     bike.alive = False
 
-                        
-            now = datetime.datetime.now()
-            delay = 10  # every x seconds, create a powerup
-            if (pygame.time.get_ticks() % (CLOCK_SPD * delay) == 0):
-                powerups.append(pu.PowerUps(screen_width, screen_height, pu.PowerUps.Type.SPEED))
+                    
+#         now = datetime.datetime.now()
+#         delay = 10  # every x seconds, create a powerup
+#         if (pygame.time.get_ticks() % (CLOCK_SPD * delay) == 0):
+#             powerups.append(pu.PowerUps(screen_width, screen_height, pu.PowerUps.Type.SPEED))
 
-            for powerup in powerups:
-                for bike in bikes:
-                    if (powerup.collides(bike)):
-                        # bike.apply_powerup(powerup.type)
-                        powerups.remove(powerup)
+#         for powerup in powerups:
+#             for bike in bikes:
+#                 if (powerup.collides(bike)):
+#                     if (powerup.type == pu.PowerUps.Type.SPEED):
+#                         for x in range(len(bikes)):
+#                             bikes[x].s_multiplier = powerup.apply_powerup(bike, powerup.type)
+#                         powerups.remove(powerup)
 
-            # calling the draw method after all the positioning and checking is done
-            draw()
+#                         # After x amount of time, powerup affects disappear
+#                         duration_timer = 500
+#         duration_timer -= (1 if duration_timer > 0 else 0)
+#         if duration_timer == 0:
+#             for x in range(len(bikes)):
+#                 bikes[x].s_multiplier = 1
 
-            # Pause the clock for a frame
-            clock.tick(current_spd)
+#         # calling the draw method after all the positioning and checking is done
+#         draw()
 
-# when the loop is done, quit
-#Initialize the Game
-main_menu()
-pygame.quit()
-quit()
+#         # Pause the clock for a frame
+#         clock.tick(current_spd)
+# # when the loop is done, quit
+# #Initialize the Game
+# main_menu()
+# pygame.quit()
+# quit()
