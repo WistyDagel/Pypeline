@@ -2,6 +2,7 @@ import math
 import random
 import pygame
 from enum import *
+from pygame.locals import *
 
 # sample color tuples
 WHITE = (255, 255, 255)
@@ -16,17 +17,26 @@ B = (0, 0, 255)
 
 YELLOW = (255, 227, 77)
 
+GRAY = (128,128,128)
+
 # set bike and powerup to arbitrary colors
 bike_color = YELLOW
 powerup_color = R
 
 # GRID_FG = GRID_BG
 
+#Font
+font = "Project/Prototype_II/Assets/TRON.TTF"
+
+
+#time
+time = 100
+
 # the scale of the grid and distance between cells
 grid_cell_scl = 20  # width & height (scale) of each grid cell
 grid_margin = 1  # amount of space on all sides of cells (must be odd for pygame line drawing)
 grid_width = 40  # grid width cell count
-grid_height = 30  # grid height cell count
+grid_height = 32  # grid height cell count
 
 screen_width = ((grid_margin + grid_cell_scl) * grid_width) + grid_margin  # width of the GUI window
 screen_height = ((grid_margin + grid_cell_scl) * grid_height) + grid_margin  # height of the GUI window
@@ -41,6 +51,11 @@ pygame.init()
 screen = pygame.display.set_mode([screen_width, screen_height])
 
 pygame.display.set_caption('Jeff bike')
+
+def text_render(message, textFont, textSize, textColor):
+    newFont = pygame.font.Font(textFont, textSize)
+    newText = newFont.render(message, 0, textColor)
+    return newText
 
 
 # represents a square on the grid
@@ -94,6 +109,8 @@ class Bike:
         self.VEL = 1  # velocity - hard-coded to 1 pixel per frame
         self.v_multiplier = 1 #velocity modifier for when the bike slows down  
         self.alive = True  # used to quickly check the status of the bike
+
+    pygame.time.set_timer(USEREVENT+1, 1000)
 
     # appends a new Square to the end of the line_pieces. The x and y of the new Square are the previous Square's
     # x and y plus the bike's directional velocity
@@ -156,6 +173,8 @@ class Bike:
             print(f"{self.line_pieces[i].x}, {self.line_pieces[i].y}{(' <' if i == 0 else '')}")
 
 
+
+
 # returns a powerup positioned at a random location on the screen
 def c_powerup():
     scale = bike.scl * 1.5
@@ -187,9 +206,14 @@ def draw():
         pygame.draw.line(screen, GRID_FG, (0, grid_margin/2 + (i * (grid_cell_scl + grid_margin))),
                          (screen_width, grid_margin / 2 + (i * (grid_cell_scl + grid_margin))), grid_margin)
 
+    # top bar
+    screen.fill(GRAY, (0, 0, grid_cell_scl * (grid_width + 2), grid_cell_scl * 2 + 2)) 
+
     # bike squares
     for piece in bike.line_pieces:
         pygame.draw.rect(screen, bike.color if bike.alive else R, piece.to_rect())
+
+    timer(time)
 
     # powerup
     pygame.draw.rect(screen, powerup_color, powerup.to_rect())
@@ -212,6 +236,11 @@ for i in range(100):
 
 # start the clock (frames)
 clock = pygame.time.Clock()
+
+    # timer in top left corner
+def timer(time):
+    screen.blit(text_render(time, font, 10, WHITE))
+    time -= 1
 # run while not done
 done = False
 
@@ -219,11 +248,14 @@ pressed_down = False
 
 while not done:
 
+
     for event in pygame.event.get():
         # click the 'X' to close the window
         if event.type == pygame.QUIT:
             done = True
 
+        if event.type == USEREVENT+1:
+            timer(time)
         # key press events
         if event.type == pygame.KEYDOWN:
             # bike controls
