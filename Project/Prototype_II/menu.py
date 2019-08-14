@@ -16,128 +16,126 @@
 # # import tron
 # from pygame.locals import *
 
-# pygame.init()
+pygame.init()
 
-# screen_width=800
-# screen_height=600
+screen_width=800
+screen_height=600
 
-# screen=pygame.display.set_mode((screen_width, screen_height))
+screen=pygame.display.set_mode((screen_width, screen_height))
 
-# def text_render(message, textFont, textSize, textColor):
-#     newFont = pygame.font.Font(textFont, textSize)
-#     newText = newFont.render(message, 0, textColor)
-#     return newText
+def text_render(message, textFont, textSize, textColor):
+    newFont = pygame.font.Font(textFont, textSize)
+    newText = newFont.render(message, 0, textColor)
+    return newText
 
-# # Colors
-# WHITE = (255, 255, 255)
-# BLACK = (0, 0, 0)
-# RED = (255, 0, 0)
-# ORANGE = (247, 148, 29)
-# YELLOW = (255, 242, 0)
-# GREEN = (0, 255, 0)
-# BLUE = (0, 0, 255)
-# PURPLE = (102, 45, 145)
+# Colors
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+RED = (255, 0, 0)
+ORANGE = (247, 148, 29)
+YELLOW = (255, 242, 0)
+GREEN = (0, 255, 0)
+BLUE = (0, 0, 255)
+PURPLE = (102, 45, 145)
 
-# #Font
-# font = "Assets/TRON.TTF"
+#Font
+font = "Prototype_II/Assets/TRON.TTF"
 
-# #Framerate
-# clock = pygame.time.Clock()
-# FPS=30
+#Framerate
+clock = pygame.time.Clock()
+FPS=30
 
-# grid_cell_scl = 20  # width & height (scale) of each grid cell
-# grid_margin = 1  # amount of space on all sides of cells (must be odd for pygame line drawing)
-# grid_width = 40  # grid width cell count
-# grid_height = 30  # grid height cell count
+grid_cell_scl = 20  # width & height (scale) of each grid cell
+grid_margin = 1  # amount of space on all sides of cells (must be odd for pygame line drawing)
+grid_width = 40  # grid width cell count
+grid_height = 30  # grid height cell count
 
-# screen_width = ((grid_margin + grid_cell_scl) * grid_width) + grid_margin  # width of the GUI window
-# screen_height = ((grid_margin + grid_cell_scl) * grid_height) + grid_margin  # height of the GUI window
+screen_width = ((grid_margin + grid_cell_scl) * grid_width) + grid_margin  # width of the GUI window
+screen_height = ((grid_margin + grid_cell_scl) * grid_height) + grid_margin  # height of the GUI window
 
-# CLOCK_SPD = 100  # the base clock speed, or arbitrary framerate - keep at 100
-# current_spd = CLOCK_SPD  # the current speed of the game (may change)
-# speed_timer = 0  # used to regulate when the current speed is changed
-# slow_timer = 0 # used to regulate when the user slows their bike
-# duration_timer = 0
+CLOCK_SPD = 50  # the base clock speed, or arbitrary framerate - keep at 100
+current_spd = CLOCK_SPD  # the current speed of the game (may change)
+speed_timer = 0  # used to regulate when the current speed is changed
+slow_timer = 0 # used to regulate when the user slows their bike
 
+# decide on colors
+bike_color = c.YELLOW
+powerup_color = c.RED
 
-# # decide on colors
-# bike_color = c.YELLOW
-# powerup_color = c.RED
+GRID_BG = c.BLACK
+GRID_FG = (40, 140, 160)
 
-# GRID_BG = c.BLACK
-# GRID_FG = (40, 140, 160)
+# initialize pygame module
+# def initialize():
 
-# # initialize pygame module
-# # def initialize():
+screen = pygame.display.set_mode([screen_width, screen_height])
 
-# screen = pygame.display.set_mode([screen_width, screen_height])
+pygame.display.set_caption('Prototype II')
 
-# pygame.display.set_caption('Prototype II')
+# draw the background, grid, and squares
+def draw():
+    # erase everything
+    screen.fill(GRID_BG)
 
-# # draw the background, grid, and squares
-# def draw():
-#     # erase everything
-#     screen.fill(GRID_BG)
+    # grid x lines (vertical)
+    for i in range(grid_width + 1):
+        pygame.draw.line(screen, GRID_FG, (grid_margin / 2 + (i * (grid_cell_scl + grid_margin)), 0),
+                         (grid_margin / 2 + (i * (grid_cell_scl + grid_margin)), screen_height), grid_margin)
 
-#     # grid x lines (vertical)
-#     for i in range(grid_width + 1):
-#         pygame.draw.line(screen, GRID_FG, (grid_margin / 2 + (i * (grid_cell_scl + grid_margin)), 0),
-#                          (grid_margin / 2 + (i * (grid_cell_scl + grid_margin)), screen_height), grid_margin)
+    # grid y lines (horizontal)
+    for i in range(grid_height + 1):
+        pygame.draw.line(screen, GRID_FG, (0, grid_margin/2 + (i * (grid_cell_scl + grid_margin))),
+                         (screen_width, grid_margin / 2 + (i * (grid_cell_scl + grid_margin))), grid_margin)
 
-#     # grid y lines (horizontal)
-#     for i in range(grid_height + 1):
-#         pygame.draw.line(screen, GRID_FG, (0, grid_margin/2 + (i * (grid_cell_scl + grid_margin))),
-#                          (screen_width, grid_margin / 2 + (i * (grid_cell_scl + grid_margin))), grid_margin)
+    # bike squares
+    for bike in bikes:
+        bike.draw(screen)
 
-#     # bike squares
-#     for bike in bikes:
-#         bike.draw(screen)
+    # powerup
+    for powerup in powerups:
+        pygame.draw.rect(screen, powerup.color, powerup.to_rect())
 
-#     # powerup
-#     for powerup in powerups:
-#         pygame.draw.rect(screen, powerup.color, powerup.to_rect())
+    # flip the screen (? not sure why needed ?)
+    pygame.display.flip()
 
-#     # flip the screen (? not sure why needed ?)
-#     pygame.display.flip()
+# instantiate a bike object
+bikes = [b.Bike(0, 0, b.Bike.Direction.RIGHT, c.PURPLE, pygame.K_q, pygame.K_w, pygame.K_e), 
+         b.Bike(screen_width - b.Bike.WEIGHT, screen_height - b.Bike.WEIGHT, b.Bike.Direction.LEFT, c.YELLOW, pygame.K_LEFT, pygame.K_DOWN, pygame.K_RIGHT),
+         b.Bike(0, screen_height - b.Bike.WEIGHT, b.Bike.Direction.UP, c.BLUE, pygame.K_z, pygame.K_x, pygame.K_c),
+         b.Bike(screen_width - b.Bike.WEIGHT, 0, b.Bike.Direction.DOWN, c.GREEN, pygame.K_i, pygame.K_o, pygame.K_p)]           
 
-# # instantiate a bike object
-# bikes = [b.Bike(0, 0, b.Bike.Direction.RIGHT, c.PURPLE, pygame.K_q, pygame.K_w, pygame.K_e), 
-#          b.Bike(screen_width - b.Bike.WEIGHT, screen_height - b.Bike.WEIGHT, b.Bike.Direction.LEFT, c.YELLOW, pygame.K_LEFT, pygame.K_DOWN, pygame.K_RIGHT),
-#          b.Bike(0, screen_height - b.Bike.WEIGHT, b.Bike.Direction.UP, c.BLUE, pygame.K_z, pygame.K_x, pygame.K_c),
-#          b.Bike(screen_width - b.Bike.WEIGHT, 0, b.Bike.Direction.DOWN, c.GREEN, pygame.K_i, pygame.K_o, pygame.K_p)]           
+powerups = [pu.PowerUps(screen_width, screen_height, pu.PowerUps.Type.SPEED)]
 
-# powerups = [pu.PowerUps(screen_width, screen_height, pu.PowerUps.Type.SPEED)]
+# start the clock (frames)
+clock = pygame.time.Clock()
 
-# # start the clock (frames)
-# clock = pygame.time.Clock()
+def main_menu():
+    menu=True
+    selected="start"
 
-# def main_menu():
-#     menu=True
-#     selected="start"
+    while menu:
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_UP:
+                    selected = "start"
+                elif event.key == pygame.K_DOWN:
+                    selected = "quit"
+                if event.key == pygame.K_RETURN:
+                    if selected == "start":
+                        game_run()                      
+                    if selected == "quit":
+                        menu = False
 
-#     while menu:
-#         for event in pygame.event.get():
-#             if event.type == pygame.KEYDOWN:
-#                 if event.key == pygame.K_UP:
-#                     selected = "start"
-#                 elif event.key == pygame.K_DOWN:
-#                     selected = "quit"
-#                 if event.key == pygame.K_RETURN:
-#                     if selected == "start":
-#                         game_run()                      
-#                     if selected == "quit":
-#                         menu = False
-
-#         screen.fill(BLACK)
-#         title = text_render("TRON", font, 90, BLUE)
-#         if selected == "start":
-#             start_text = text_render("> START <", font, 50, YELLOW)
-#         else:
-#             start_text = text_render("START", font, 50, WHITE)
-#         if selected == "quit":
-#             quit_text = text_render("> QUIT <", font, 50, YELLOW)
-#         else:
-#             quit_text = text_render("QUIT", font, 50, WHITE)
+        screen.fill(BLACK)
+        title = text_render("TRON", font, 90, BLUE)
+        if selected == "start":
+            start_text = text_render("> START <", font, 50, YELLOW)
+        else:
+            start_text = text_render("START", font, 50, WHITE)
+        if selected == "quit":
+            quit_text = text_render("> QUIT <", font, 50, YELLOW)
+        else:
+            quit_text = text_render("QUIT", font, 50, WHITE)
     
 #         title_rect = title.get_rect()
 #         start_rect = start_text.get_rect()
