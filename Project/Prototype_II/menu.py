@@ -35,7 +35,7 @@ BLUE = (0, 0, 255)
 PURPLE = (102, 45, 145)
 
 #Font
-font = "Project/Prototype_II/Assets/TRON.TTF"
+font = "Assets/TRON.TTF"
 
 #Framerate
 clock = pygame.time.Clock()
