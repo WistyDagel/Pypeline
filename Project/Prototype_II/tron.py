@@ -171,6 +171,8 @@ def game_run():
                 for bike in bikes:
                     if event.key == bike.right_key:
                         bike.turn(1)
+                    elif event.key == bike.slow_key:
+                        bike.cut()
                     elif event.key == bike.left_key:
                         bike.turn(-1)
 

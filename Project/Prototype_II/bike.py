@@ -177,6 +177,20 @@ class Bike:
 
         return square.Square(x, y, w, h)
 
+    def cut(self):
+        bike = self.line_pieces[-1]
+        if self.direction == Bike.Direction.UP:
+            bike.h = self.WEIGHT
+        elif self.direction == Bike.Direction.LEFT:
+            bike.w = self.WEIGHT
+        elif self.direction == Bike.Direction.DOWN:
+            bike.y = bike.y + bike.h - self.WEIGHT
+            bike.h = self.WEIGHT
+        elif self.direction == Bike.Direction.RIGHT:
+            bike.x = bike.x + bike.w - self.WEIGHT
+            bike.w = self.WEIGHT
+
+        self.line_pieces = [bike];
 
     def eff_spd(self):
         return self.SPD * self.s_multiplier
