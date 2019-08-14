@@ -100,7 +100,7 @@ def draw():
 bikes = [b.Bike(0, 0, b.Bike.Direction.RIGHT, c.PURPLE, pygame.K_a, pygame.K_s, pygame.K_d), 
          b.Bike(screen_width - b.Bike.WEIGHT, screen_height - b.Bike.WEIGHT, b.Bike.Direction.LEFT, c.YELLOW, pygame.K_LEFT, pygame.K_DOWN, pygame.K_RIGHT)]           
 
-powerups = [pu.PowerUps(9, screen_width, screen_height, (0, 255, 0))]
+powerups = [pu.PowerUps(screen_width, screen_height, pu.PowerUps.Type.SPEED)]
 
 # start the clock (frames)
 clock = pygame.time.Clock()
