@@ -21,6 +21,7 @@ CLOCK_SPD = 100  # the maximum frames/second
 current_spd = CLOCK_SPD  # the current speed of the game (may change)
 speed_timer = 0  # used to regulate when the current speed is changed
 slow_timer = 0 # used to regulate when the user slows their bike
+duration_timer = 0
 
 # decide on colors
 bike_color = c.YELLOW
@@ -137,8 +138,17 @@ while not done:
     for powerup in powerups:
         for bike in bikes:
             if (powerup.collides(bike)):
-                # bike.apply_powerup(powerup.type)
-                powerups.remove(powerup)
+                if (powerup.type == pu.PowerUps.Type.SPEED):
+                    for x in range(len(bikes)):
+                        bikes[x].s_multiplier = powerup.apply_powerup(bike, powerup.type)
+                    powerups.remove(powerup)
+
+                    # After x amount of time, powerup affects disappear
+                    duration_timer = 500
+    duration_timer -= (1 if duration_timer > 0 else 0)
+    if duration_timer == 0:
+        for x in range(len(bikes)):
+            bikes[x].s_multiplier = 1
 
     # calling the draw method after all the positioning and checking is done
     draw()
