@@ -23,5 +23,10 @@ class PowerUps(square.Square):
         self.type = type
         self.color = self.type.value
         
+    def apply_powerup(self, bike: b.Bike, type: Type):
+        if (type == PowerUps.Type.SPEED):
+            speed = 2.5
+            return speed
+
     def collides(self, bike: b.Bike):
         return self.overlaps(bike.get_leading_edge())
