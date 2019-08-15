@@ -190,7 +190,7 @@ class Bike:
             bike.x = bike.x + bike.w - self.WEIGHT
             bike.w = self.WEIGHT
 
-        self.line_pieces = [bike];
+        self.line_pieces = [bike]
 
     def eff_spd(self):
         return self.SPD * self.s_multiplier
