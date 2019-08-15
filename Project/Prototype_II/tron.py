@@ -33,6 +33,7 @@ YELLOW = (255, 242, 0)
 GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
 PURPLE = (102, 45, 145)
+GRAY = (128,128,128)
 
 #Font
 font = "Assets/TRON.TTF"
@@ -44,7 +45,7 @@ FPS=30
 grid_cell_scl = 20  # width & height (scale) of each grid cell
 grid_margin = 1  # amount of space on all sides of cells (must be odd for pygame line drawing)
 grid_width = 40  # grid width cell count
-grid_height = 30  # grid height cell count
+grid_height = 32  # grid height cell count
 
 screen_width = ((grid_margin + grid_cell_scl) * grid_width) + grid_margin  # width of the GUI window
 screen_height = ((grid_margin + grid_cell_scl) * grid_height) + grid_margin  # height of the GUI window
@@ -100,14 +101,17 @@ def draw():
     for powerup in powerups:
         pygame.draw.rect(screen, powerup.color, powerup.to_rect())
 
+    #draw the top bar and the timer
+    timer(time)
+
     # flip the screen (? not sure why needed ?)
     pygame.display.flip()
 
 # instantiate a bike object
-bikes = [b.Bike(0, 0, b.Bike.Direction.RIGHT, c.PURPLE, pygame.K_q, pygame.K_w, pygame.K_e), 
+bikes = [b.Bike(0, (grid_cell_scl * 2) + 2, b.Bike.Direction.RIGHT, c.PURPLE, pygame.K_q, pygame.K_w, pygame.K_e), 
          b.Bike(screen_width - b.Bike.WEIGHT, screen_height - b.Bike.WEIGHT, b.Bike.Direction.LEFT, c.YELLOW, pygame.K_LEFT, pygame.K_DOWN, pygame.K_RIGHT),
          b.Bike(0, screen_height - b.Bike.WEIGHT, b.Bike.Direction.UP, c.BLUE, pygame.K_z, pygame.K_x, pygame.K_c),
-         b.Bike(screen_width - b.Bike.WEIGHT, 0, b.Bike.Direction.DOWN, c.GREEN, pygame.K_i, pygame.K_o, pygame.K_p)]           
+         b.Bike(screen_width - b.Bike.WEIGHT, grid_cell_scl * 2, b.Bike.Direction.DOWN, c.GREEN, pygame.K_i, pygame.K_o, pygame.K_p)]           
 
 powerups = [pu.PowerUps(screen_width, screen_height, pu.PowerUps.Type.SPEED)]
 
@@ -164,9 +168,16 @@ def game_run():
     global current_spd
     global duration_timer
     
+    global time
+    time = 0
+    pygame.time.set_timer(USEREVENT+1, 1000)
+
     while not done:
     
         for event in pygame.event.get():
+            #increments time every second
+            if event.type == USEREVENT+1:
+                time += 1
             # click the 'X' to close the window
             if event.type == pygame.QUIT:
                 done = True
@@ -210,7 +221,7 @@ def game_run():
             bike.move()
 
             # make the bike check if it is 'dead' (see method declaration for more info)
-            bike.check_die(0, 0, screen_width, screen_height)
+            bike.check_die(0,  (grid_cell_scl * 2), screen_width, screen_height)
 
             for other in bikes:
                 if bike is not other and bike.touches(other.line_pieces):
