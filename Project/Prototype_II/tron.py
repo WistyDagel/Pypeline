@@ -70,6 +70,13 @@ screen = pygame.display.set_mode([screen_width, screen_height])
 
 pygame.display.set_caption('Prototype II')
 
+first = True
+pygame.time.set_timer(USEREVENT+1, 1000)
+
+def timer(time):
+    screen.fill(GRAY, (0, 0, grid_cell_scl * (grid_width + 2), grid_cell_scl * 2 + 2)) 
+    screen.blit(text_render(str(time), font, 20, WHITE), ((grid_width * grid_cell_scl) - 10, 0))
+
 # draw the background, grid, and squares
 def draw():
     # erase everything

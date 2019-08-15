@@ -26,11 +26,7 @@ powerup_color = R
 # GRID_FG = GRID_BG
 
 #Font
-font = "Project/Prototype_II/Assets/TRON.TTF"
-
-
-#time
-time = 100
+font = "Assets/TRON.TTF"
 
 # the scale of the grid and distance between cells
 grid_cell_scl = 20  # width & height (scale) of each grid cell
@@ -109,8 +105,6 @@ class Bike:
         self.VEL = 1  # velocity - hard-coded to 1 pixel per frame
         self.v_multiplier = 1 #velocity modifier for when the bike slows down  
         self.alive = True  # used to quickly check the status of the bike
-
-    pygame.time.set_timer(USEREVENT+1, 1000)
 
     # appends a new Square to the end of the line_pieces. The x and y of the new Square are the previous Square's
     # x and y plus the bike's directional velocity
@@ -206,9 +200,6 @@ def draw():
         pygame.draw.line(screen, GRID_FG, (0, grid_margin/2 + (i * (grid_cell_scl + grid_margin))),
                          (screen_width, grid_margin / 2 + (i * (grid_cell_scl + grid_margin))), grid_margin)
 
-    # top bar
-    screen.fill(GRAY, (0, 0, grid_cell_scl * (grid_width + 2), grid_cell_scl * 2 + 2)) 
-
     # bike squares
     for piece in bike.line_pieces:
         pygame.draw.rect(screen, bike.color if bike.alive else R, piece.to_rect())
@@ -237,25 +228,30 @@ for i in range(100):
 # start the clock (frames)
 clock = pygame.time.Clock()
 
-    # timer in top left corner
+    # timer in top right corner
 def timer(time):
-    screen.blit(text_render(time, font, 10, WHITE))
-    time -= 1
+    screen.fill(GRAY, (0, 0, grid_cell_scl * (grid_width + 2), grid_cell_scl * 2 + 2)) 
+    screen.blit(text_render(str(time), font, 20, WHITE), ((grid_width * grid_cell_scl) - 10, 0))
 # run while not done
 done = False
 
 pressed_down = False
 
+first = True
+pygame.time.set_timer(USEREVENT+1, 1000)
 while not done:
-
-
+    if(first):
+        time = 100
+        first = False
     for event in pygame.event.get():
+
+        if event.type == USEREVENT+1:
+            time -= 1
+
         # click the 'X' to close the window
         if event.type == pygame.QUIT:
             done = True
 
-        if event.type == USEREVENT+1:
-            timer(time)
         # key press events
         if event.type == pygame.KEYDOWN:
             # bike controls
@@ -283,6 +279,7 @@ while not done:
     # Starts a timer allowing you to only slow down for a specific amount of time
     if pressed_down:
         bike.v_multiplier = .7
+        timer(56)
     #     slow_timer = 500
     # slow_timer -= (1 if slow_timer > 0 else 0)
     # if slow_timer == 0:
