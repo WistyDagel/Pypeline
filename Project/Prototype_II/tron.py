@@ -37,6 +37,7 @@ GRAY = (128,128,128)
 
 #Font
 font = "Assets/TRON.TTF"
+timer_font = "Assets/clock.TTF"
 
 #Framerate
 clock = pygame.time.Clock()
@@ -83,8 +84,9 @@ def timer(time, bikes, finalTimes):
         else:
             if(finalTimes[timerspot - 1] == 0):
                 finalTimes[timerspot - 1] = time
-            screen.blit(text_render(str(finalTimes[timerspot - 1]), font, 20, bike.color), (((8 * timerspot) * grid_cell_scl), 0))
+            screen.blit(text_render(str(finalTimes[timerspot - 1]), timer_font, 40, bike.color), (((8 * timerspot) * grid_cell_scl), 0))
             timerspot -= 1
+
 
 # draw the background, grid, and squares
 def draw():
@@ -122,7 +124,16 @@ bikes = [b.Bike(0, (grid_cell_scl * 2) + 2, b.Bike.Direction.RIGHT, c.PURPLE, py
          b.Bike(0, screen_height - b.Bike.WEIGHT, b.Bike.Direction.UP, c.BLUE, pygame.K_z, pygame.K_x, pygame.K_c),
          b.Bike(screen_width - b.Bike.WEIGHT, grid_cell_scl * 2, b.Bike.Direction.DOWN, c.GREEN, pygame.K_i, pygame.K_o, pygame.K_p)]           
 
-powerups = [pu.PowerUps(screen_width, screen_height, pu.PowerUps.Type.SPEED)]
+# Random number decides which power up is first
+decidesStartingPowerUp = random.randint(0, 3)
+if (decidesStartingPowerUp == 1 or decidesStartingPowerUp == 3):
+    startingPowerUp = pu.PowerUps.Type.SPEED
+elif (decidesStartingPowerUp == 2):
+    startingPowerUp = pu.PowerUps.Type.MINE
+else:
+    startingPowerUp = pu.PowerUps.Type.NUKE
+
+powerups = [pu.PowerUps(screen_width, screen_height, startingPowerUp)]
 
 # start the clock (frames)
 clock = pygame.time.Clock()
@@ -232,25 +243,38 @@ def game_run():
             bike.move()
 
             # make the bike check if it is 'dead' (see method declaration for more info)
-            bike.check_die(0,  (grid_cell_scl * 2), screen_width, screen_height)
+            if bike.check_die(0,  (grid_cell_scl * 2), screen_width, screen_height):
+                bikes.remove(bike)
 
             for other in bikes:
                 if bike is not other and bike.touches(other.line_pieces):
                     bike.alive = False
 
                     
-        now = datetime.datetime.now()
         delay = 10  # every x seconds, create a powerup
+        decidesPowerUp = random.randint(0, 3)
+        # Uses a random number to pick a random power up
+        if (decidesPowerUp == 1 or decidesPowerUp == 3):
+            randomPowerUp = pu.PowerUps.Type.SPEED
+        elif (decidesPowerUp == 2):
+            randomPowerUp = pu.PowerUps.Type.MINE
+        else:
+            randomPowerUp = pu.PowerUps.Type.NUKE
+
         if (pygame.time.get_ticks() % (CLOCK_SPD * delay) == 0):
-            powerups.append(pu.PowerUps(screen_width, screen_height, pu.PowerUps.Type.SPEED))
+            powerups.append(pu.PowerUps(screen_width, screen_height, randomPowerUp))
 
         for powerup in powerups:
             for bike in bikes:
                 if (powerup.collides(bike)):
-                    if (powerup.type == pu.PowerUps.Type.SPEED):
-                        for x in range(len(bikes)):
-                            bikes[x].s_multiplier = powerup.apply_powerup(bike, powerup.type)
+                    if (powerup.type is pu.PowerUps.Type.SPEED or
+                        powerup.type is pu.PowerUps.Type.NUKE):
+                        pu.PowerUps.apply_to_all(bikes, powerup.type)
                         powerups.remove(powerup)
+                    # elif (powerup.type is pu.PowerUps.Type.NUKE):
+                    #     for x in range(len(bikes)):
+                    #         bikes[x] = powerup.apply_powerup(bike, powerup.type)
+                    #     powerups.remove(powerup)
 
                         # After x amount of time, powerup affects disappear
                         duration_timer = 500

@@ -131,7 +131,8 @@ class Bike:
             self.alive = False
 
         if not self.alive:
-            self.reset()
+            return True
+        return False
     
     # check if the foremost 1-pixel wide edge of the bike is in contact with a list of squares
     def touches(self, other):
@@ -190,7 +191,7 @@ class Bike:
             bike.x = bike.x + bike.w - self.WEIGHT
             bike.w = self.WEIGHT
 
-        self.line_pieces = [bike];
+        self.line_pieces = [bike]
 
     def eff_spd(self):
         return self.SPD * self.s_multiplier
