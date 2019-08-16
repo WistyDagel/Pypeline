@@ -231,7 +231,8 @@ def game_run():
             bike.move()
 
             # make the bike check if it is 'dead' (see method declaration for more info)
-            bike.check_die(0,  (grid_cell_scl * 2), screen_width, screen_height)
+            if bike.check_die(0,  (grid_cell_scl * 2), screen_width, screen_height):
+                bikes.remove(bike)
 
             for other in bikes:
                 if bike is not other and bike.touches(other.line_pieces):
