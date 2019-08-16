@@ -253,16 +253,14 @@ def game_run():
         for powerup in powerups:
             for bike in bikes:
                 if (powerup.collides(bike)):
-                    if (powerup.type == pu.PowerUps.Type.SPEED):
-                        for x in range(len(bikes)):
-                            bikes[x].s_multiplier = powerup.apply_powerup(bike, powerup.type)
+                    if (powerup.type is pu.PowerUps.Type.SPEED or
+                        powerup.type is pu.PowerUps.Type.NUKE):
+                        pu.PowerUps.apply_to_all(bikes, powerup.type)
                         powerups.remove(powerup)
-                    elif (powerup.type == pu.PowerUps.Type.NUKE):
-                        for x in range(len(bikes)):
-                            bikes[x] = powerup.apply_powerup(bike, powerup.type)
-                        powerups.remove(powerup)
-                    else:
-                        powerups.remove(powerup)
+                    # elif (powerup.type is pu.PowerUps.Type.NUKE):
+                    #     for x in range(len(bikes)):
+                    #         bikes[x] = powerup.apply_powerup(bike, powerup.type)
+                    #     powerups.remove(powerup)
 
                         # After x amount of time, powerup affects disappear
                         duration_timer = 500
