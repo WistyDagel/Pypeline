@@ -22,13 +22,18 @@ class PowerUps(square.Square):
         self.y = math.ceil(random.randint(0, maxY - self.h / 2))
         self.type = type
         self.color = self.type.value
-        
-    def apply_powerup(self, bike: b.Bike, type: Type):
-        if (type == PowerUps.Type.SPEED):
-            speed = 10
-            return speed
-        elif (type == PowerUps.Type.NUKE):
-            bike.cut
+    
+    @staticmethod
+    def apply_to_all(bikes, type):
+        if (type is PowerUps.Type.SPEED):
+            for bike in bikes:
+                bike.s_multiplier = 2.5
+        elif (type is PowerUps.Type.NUKE):
+            for bike in bikes:
+                bike.cut()
             
+
     def collides(self, bike: b.Bike):
-        return self.overlaps(bike.get_leading_edge())
+        if (bike):
+            return self.overlaps(bike.get_leading_edge())
+        return False
