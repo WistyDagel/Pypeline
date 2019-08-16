@@ -37,6 +37,7 @@ GRAY = (128,128,128)
 
 #Font
 font = "Assets/TRON.TTF"
+timer_font = "Assets/clock.TTF"
 
 #Framerate
 clock = pygame.time.Clock()
@@ -76,7 +77,7 @@ pygame.time.set_timer(USEREVENT+1, 1000)
 
 def timer(time):
     screen.fill(GRAY, (0, 0, grid_cell_scl * (grid_width + 2), grid_cell_scl * 2 + 2)) 
-    screen.blit(text_render(str(time), font, 20, WHITE), ((grid_width * grid_cell_scl) - 10, 0))
+    screen.blit(text_render(str(time), timer_font, 40, WHITE), ((grid_width * grid_cell_scl) - 10, 0))
 
 # draw the background, grid, and squares
 def draw():
