@@ -300,23 +300,26 @@ def game_run():
 
         for powerup in powerups:
             for bike in bikes:
-                if (powerup.collides(bike)):
-                    if (powerup.type is pu.PowerUps.Type.SPEED or
-                        powerup.type is pu.PowerUps.Type.NUKE):
-                        pu.PowerUps.apply_to_all(bikes, powerup.type)
-                        # After x amount of time, powerup affects disappear
-                        duration_timer = 500
-                    elif (powerup.type is pu.PowerUps.Type.MINE):
-                        p = pu.PowerUps(screen_width, screen_height, pu.PowerUps.Type.ACTUALLY_MINE)
-                        p.h *= 2
-                        p.w *= 2
-                        powerups.append(p)
-                    elif (powerup.type is pu.PowerUps.Type.ACTUALLY_MINE):
-                        bike.alive = False
-                    elif (powerup.type is pu.PowerUps.Type.PHASE):
-                        bike.phase = True
+                # Stops the powerup from spawning ontop of a line
+                # If it spawns on a line, then it will remove it from the list and recreate a new powerup
+                # NEEDS WORK
+                    if (powerup.collides(bike)):
+                        if (powerup.type is pu.PowerUps.Type.SPEED or
+                            powerup.type is pu.PowerUps.Type.NUKE):
+                            pu.PowerUps.apply_to_all(bikes, powerup.type)
+                            # After x amount of time, powerup affects disappear
+                            duration_timer = 500
+                        elif (powerup.type is pu.PowerUps.Type.MINE):
+                            p = pu.PowerUps(screen_width, screen_height, pu.PowerUps.Type.ACTUALLY_MINE)
+                            p.h *= 2
+                            p.w *= 2
+                            powerups.append(p)
+                        elif (powerup.type is pu.PowerUps.Type.ACTUALLY_MINE):
+                            bike.alive = False
+                        elif (powerup.type is pu.PowerUps.Type.PHASE):
+                            bike.phase = True
 
-                    powerups.remove(powerup)
+                        powerups.remove(powerup)
         duration_timer -= (1 if duration_timer > 0 else 0)
         if duration_timer == 0:
             for x in range(len(bikes)):
