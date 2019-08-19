@@ -75,9 +75,19 @@ pygame.display.set_caption('Prototype II')
 first = True
 pygame.time.set_timer(USEREVENT+1, 1000)
 
-def timer(time):
-    screen.fill(GRAY, (0, 0, grid_cell_scl * (grid_width + 2), grid_cell_scl * 2 + 2)) 
-    screen.blit(text_render(str(time), timer_font, 40, WHITE), ((grid_width * grid_cell_scl) - 10, 0))
+#takes in the time, bikes and when they died and prints to the topbar
+def timer(time, timerbikes, finalTimes):
+    timerspot = 4;
+    for bike in timerbikes:
+        if(bike.alive):
+            screen.blit(text_render(str(time), timer_font, 40, bike.color), (((8 * timerspot) * grid_cell_scl), 0))
+            timerspot -= 1
+        else:
+            if(finalTimes[timerspot - 1] == 0):
+                finalTimes[timerspot - 1] = time
+            screen.blit(text_render(str(finalTimes[timerspot - 1]), timer_font, 40, bike.color), (((8 * timerspot) * grid_cell_scl), 0))
+            timerspot -= 1
+
 
 # draw the background, grid, and squares
 def draw():
@@ -103,7 +113,8 @@ def draw():
         pygame.draw.rect(screen, powerup.color, powerup.to_rect())
 
     #draw the top bar and the timer
-    timer(time)
+    screen.fill(GRAY, (0, 0, grid_cell_scl * (grid_width + 2), grid_cell_scl * 2 + 2)) 
+    timer(time, timerbikes, finalTimes)
 
     # flip the screen (? not sure why needed ?)
     pygame.display.flip()
@@ -179,6 +190,13 @@ def game_run():
     global duration_timer
     
     global time
+    global finalTimes
+    global timerbikes
+    timerbikes = [b.Bike(0, (grid_cell_scl * 2) + 2, b.Bike.Direction.RIGHT, c.PURPLE, pygame.K_q, pygame.K_w, pygame.K_e), 
+         b.Bike(screen_width - b.Bike.WEIGHT, screen_height - b.Bike.WEIGHT, b.Bike.Direction.LEFT, c.YELLOW, pygame.K_LEFT, pygame.K_DOWN, pygame.K_RIGHT),
+         b.Bike(0, screen_height - b.Bike.WEIGHT, b.Bike.Direction.UP, c.BLUE, pygame.K_z, pygame.K_x, pygame.K_c),
+         b.Bike(screen_width - b.Bike.WEIGHT, grid_cell_scl * 2, b.Bike.Direction.DOWN, c.GREEN, pygame.K_i, pygame.K_o, pygame.K_p)]         
+    finalTimes = [0, 0, 0, 0]
     time = 0
     pygame.time.set_timer(USEREVENT+1, 1000)
 
@@ -234,6 +252,9 @@ def game_run():
 
             # make the bike check if it is 'dead' (see method declaration for more info)
             if bike.check_die(0,  (grid_cell_scl * 2), screen_width, screen_height):
+                for timerbike in timerbikes:
+                    if(bike.color == timerbike.color):
+                        timerbike.alive = False
                 bikes.remove(bike)
 
             for other in bikes:
@@ -261,10 +282,15 @@ def game_run():
                         powerup.type is pu.PowerUps.Type.NUKE):
                         pu.PowerUps.apply_to_all(bikes, powerup.type)
                         powerups.remove(powerup)
-                    # elif (powerup.type is pu.PowerUps.Type.NUKE):
-                    #     for x in range(len(bikes)):
-                    #         bikes[x] = powerup.apply_powerup(bike, powerup.type)
-                    #     powerups.remove(powerup)
+                    elif (powerup.type is pu.PowerUps.Type.MINE):
+                        p = pu.PowerUps(screen_width, screen_height, pu.PowerUps.Type.ACTUALLY_MINE)
+                        p.h *= 2
+                        p.w *= 2
+                        powerups.append(p)
+                        powerups.remove(powerup)
+                    elif (powerup.type is pu.PowerUps.Type.ACTUALLY_MINE):
+                        bike.alive = False
+                        powerups.remove(powerup)
 
                         # After x amount of time, powerup affects disappear
                         duration_timer = 500

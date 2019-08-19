@@ -13,7 +13,8 @@ class PowerUps(square.Square):
         SPEED = color.GREEN,
         NUKE = color.YELLOW,
         MINE = color.RED,
-        PHASE = color.WHITE
+        PHASE = color.WHITE,
+        ACTUALLY_MINE = color.BLACK
 
     def __init__(self, maxX: int, maxY: int, type: Type):
         self.w = 8
@@ -27,11 +28,10 @@ class PowerUps(square.Square):
     def apply_to_all(bikes, type):
         if (type is PowerUps.Type.SPEED):
             for bike in bikes:
-                bike.s_multiplier = 2.5
+                bike.s_multiplier = 10
         elif (type is PowerUps.Type.NUKE):
             for bike in bikes:
                 bike.cut()
-            
 
     def collides(self, bike: b.Bike):
         if (bike):
