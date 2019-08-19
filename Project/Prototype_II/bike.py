@@ -50,6 +50,8 @@ class Bike:
         self.slow_key = slow_key
         self.right_key = right_key
 
+        self.phase = False
+
         self.reset()
     
     def reset(self):
@@ -123,21 +125,20 @@ class Bike:
     # check if the bike is outside the play area (defined by the x, y, w, h params)
     def check_die(self, x, y, w, h):
         bike = self.get_bike()
-        if self.touches(self.get_line()[:-1]):
+        if self.touches(self):
             self.alive = False
 
         # check if square is outside screen
         if bike.x < x or bike.x + bike.w > w or bike.y < y or bike.y + bike.h > h:
             self.alive = False
 
-        if not self.alive:
-            return True
-        return False
+        return not self.alive
     
     # check if the foremost 1-pixel wide edge of the bike is in contact with a list of squares
     def touches(self, other):
-        for piece in other:
-            if self.get_leading_edge().overlaps(piece):
+        edge = self.get_leading_edge()
+        for piece in other.line_pieces:
+            if edge.overlaps(piece):
                 return True
         return False
 
@@ -198,10 +199,10 @@ class Bike:
 
     def draw(self, screen):
         for piece in self.line_pieces:
-            sq = square.Square(
-                piece.x,
-                piece.y,
-                piece.w + (1 if self.Direction is Bike.Direction.LEFT else 0),
-                piece.h + (1 if self.Direction is Bike.Direction.UP else 0)
-            )
-            pygame.draw.rect(screen, self.color, sq.to_rect())
+            pygame.draw.rect(screen, self.color, piece.to_rect())
+
+    def overlaps(self, square):
+        for piece in self.line_pieces:
+            if piece.overlaps(square):
+                return True
+        return False

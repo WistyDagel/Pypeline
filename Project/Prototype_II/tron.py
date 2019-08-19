@@ -126,12 +126,19 @@ bikes = [b.Bike(0, (grid_cell_scl * 2) + 2, b.Bike.Direction.RIGHT, c.PURPLE, py
          b.Bike(0, screen_height - b.Bike.WEIGHT, b.Bike.Direction.UP, c.BLUE, pygame.K_z, pygame.K_x, pygame.K_c),
          b.Bike(screen_width - b.Bike.WEIGHT, grid_cell_scl * 2, b.Bike.Direction.DOWN, c.GREEN, pygame.K_i, pygame.K_o, pygame.K_p)]           
 
+# bikes[0].phase = True
+bikes[1].phase = True
+# bikes[2].phase = True
+# bikes[3].phase = True
+
 # Random number decides which power up is first
 decidesStartingPowerUp = random.randint(0, 3)
-if (decidesStartingPowerUp == 1 or decidesStartingPowerUp == 3):
+if (decidesStartingPowerUp == 1):
     startingPowerUp = pu.PowerUps.Type.SPEED
 elif (decidesStartingPowerUp == 2):
     startingPowerUp = pu.PowerUps.Type.MINE
+elif (decidesStartingPowerUp == 3):
+    startingPowerUp = pu.PowerUps.Type.PHASE
 else:
     startingPowerUp = pu.PowerUps.Type.NUKE
 
@@ -328,17 +335,21 @@ def game_run():
                 bikes.remove(bike)
 
             for other in bikes:
-                if bike is not other and bike.touches(other.line_pieces):
-                    bike.alive = False
+                if bike is not other:
+                    if bike.phase is not True:
+                        if bike.touches(other):
+                            bike.alive = False
 
                     
         delay = 10  # every x seconds, create a powerup
         decidesPowerUp = random.randint(0, 3)
         # Uses a random number to pick a random power up
-        if (decidesPowerUp == 1 or decidesPowerUp == 3):
+        if (decidesPowerUp == 1):
             randomPowerUp = pu.PowerUps.Type.SPEED
         elif (decidesPowerUp == 2):
             randomPowerUp = pu.PowerUps.Type.MINE
+        elif (decidesPowerUp == 3):
+            randomPowerUp = pu.PowerUps.Type.PHASE
         else:
             randomPowerUp = pu.PowerUps.Type.NUKE
 
@@ -347,21 +358,26 @@ def game_run():
 
         for powerup in powerups:
             for bike in bikes:
-                if (powerup.collides(bike)):
-                    if (powerup.type is pu.PowerUps.Type.SPEED or
-                        powerup.type is pu.PowerUps.Type.NUKE):
-                        pu.PowerUps.apply_to_all(bikes, powerup.type)
-                        # After x amount of time, powerup affects disappear
-                        duration_timer = 500
-                    elif (powerup.type is pu.PowerUps.Type.MINE):
-                        p = pu.PowerUps(screen_width, screen_height, pu.PowerUps.Type.ACTUALLY_MINE)
-                        p.h *= 2
-                        p.w *= 2
-                        powerups.append(p)
-                    elif (powerup.type is pu.PowerUps.Type.ACTUALLY_MINE):
-                        bike.alive = False
+                # Stops the powerup from spawning ontop of a line
+                # If it spawns on a line, then it will remove it from the list and recreate a new powerup
+                # NEEDS WORK
+                    if (powerup.collides(bike)):
+                        if (powerup.type is pu.PowerUps.Type.SPEED or
+                            powerup.type is pu.PowerUps.Type.NUKE):
+                            pu.PowerUps.apply_to_all(bikes, powerup.type)
+                            # After x amount of time, powerup affects disappear
+                            duration_timer = 500
+                        elif (powerup.type is pu.PowerUps.Type.MINE):
+                            p = pu.PowerUps(screen_width, screen_height, pu.PowerUps.Type.ACTUALLY_MINE)
+                            p.h *= 2
+                            p.w *= 2
+                            powerups.append(p)
+                        elif (powerup.type is pu.PowerUps.Type.ACTUALLY_MINE):
+                            bike.alive = False
+                        elif (powerup.type is pu.PowerUps.Type.PHASE):
+                            bike.phase = True
 
-                    powerups.remove(powerup)
+                        powerups.remove(powerup)
         duration_timer -= (1 if duration_timer > 0 else 0)
         if duration_timer == 0:
             for x in range(len(bikes)):
