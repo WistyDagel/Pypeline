@@ -57,8 +57,7 @@ speed_timer = 0  # used to regulate when the current speed is changed
 slow_timer = 0 # used to regulate when the user slows their bike
 duration_timer = 0 # Timer used when the speed is activated - lasts for 5 seconds
 paused = False # Boolean for when the game is paused or not
-
-
+game_modes = {"1 V 1" : 2, "2 V 2" : 4, "3 V 1" : 4, "Free For All" : 4} # Dictionary for game modes
 
 # decide on colors
 bike_color = c.YELLOW
@@ -154,7 +153,7 @@ def main_menu():
                     selected = "quit"
                 if event.key == pygame.K_RETURN:
                     if selected == "start":
-                        game_run()                      
+                        game_mode_menu()                      
                     if selected == "quit":
                         menu = False
 
@@ -180,6 +179,65 @@ def main_menu():
         pygame.display.update()
         clock.tick(FPS)
         pygame.display.set_caption("Main Menu")
+
+def game_mode_menu():
+    mode_menu = True
+    selected = "1 V 1"
+
+    while mode_menu:
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_UP:
+                    selected = "1 V 1"
+                elif event.key == pygame.K_RIGHT:
+                    selected = "2 V 2"
+                elif event.key == pygame.K_DOWN:
+                    selected = "3 V 1"
+                elif event.key == pygame.K_LEFT:
+                    selected = "Free For All"
+                if event.key == pygame.K_RETURN:
+                    if selected == "1 V 1":
+                        game_run();                
+                    if selected == "2 V 2":
+                        game_run();
+                    if selected == "3 V 1":
+                        game_run();
+                    if selected == "Free For All":
+                        game_run();
+
+        screen.fill(BLACK)
+        title = text_render("Game Modes", font, 75, BLUE)
+        if selected == "1 V 1":
+            one_text = text_render("> 1 V 1 <", font, 30, YELLOW)
+        else:
+            one_text = text_render("1 V 1", font, 30, WHITE)
+        if selected == "2 V 2":
+            two_text = text_render("> 2 V 2 <", font, 30, YELLOW)
+        else:
+            two_text = text_render("2 V 2", font, 30, WHITE)
+        if selected == "3 V 1":
+            three_text = text_render("> 3 V 1 <", font, 30, YELLOW)
+        else:
+            three_text = text_render(" 3 V 1 ", font, 30, WHITE)
+        if selected == "Free For All":
+            free_text = text_render("> Free For All <", font, 24, YELLOW)
+        else:
+            free_text = text_render(" Free For All ", font, 24, WHITE)
+    
+        title_rect = title.get_rect()
+        one_rect = one_text.get_rect()
+        three_rect = three_text.get_rect()
+    
+        # Main Menu Text
+        screen.blit(title, (screen_width/2 - (title_rect[2]/2), 80))
+        screen.blit(one_text, (screen_width/2 - (one_rect[2]/2), 300))
+        screen.blit(two_text, (550, 400))
+        screen.blit(three_text, (screen_width/2 - (three_rect[2]/2), 500))
+        screen.blit(free_text, (25, 410))
+
+        pygame.display.update()
+        clock.tick(FPS)
+        pygame.display.set_caption("Game Mode")
 
 def game_run():
     # run while not done
