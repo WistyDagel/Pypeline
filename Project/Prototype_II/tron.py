@@ -127,7 +127,10 @@ bikes = [b.Bike(0, (grid_cell_scl * 2) + 2, b.Bike.Direction.RIGHT, c.PURPLE, py
          b.Bike(0, screen_height - b.Bike.WEIGHT, b.Bike.Direction.UP, c.BLUE, pygame.K_z, pygame.K_x, pygame.K_c),
          b.Bike(screen_width - b.Bike.WEIGHT, grid_cell_scl * 2, b.Bike.Direction.DOWN, c.GREEN, pygame.K_i, pygame.K_o, pygame.K_p)]           
 
+# bikes[0].phase = True
 bikes[1].phase = True
+# bikes[2].phase = True
+# bikes[3].phase = True
 
 # Random number decides which power up is first
 decidesStartingPowerUp = random.randint(0, 3)
