@@ -281,6 +281,8 @@ def game_run():
                     if (powerup.type is pu.PowerUps.Type.SPEED or
                         powerup.type is pu.PowerUps.Type.NUKE):
                         pu.PowerUps.apply_to_all(bikes, powerup.type)
+                        # After x amount of time, powerup affects disappear
+                        duration_timer = 500
                     elif (powerup.type is pu.PowerUps.Type.MINE):
                         p = pu.PowerUps(screen_width, screen_height, pu.PowerUps.Type.ACTUALLY_MINE)
                         p.h *= 2
@@ -288,9 +290,6 @@ def game_run():
                         powerups.append(p)
                     elif (powerup.type is pu.PowerUps.Type.ACTUALLY_MINE):
                         bike.alive = False
-
-                        # After x amount of time, powerup affects disappear
-                    duration_timer = 500
 
                     powerups.remove(powerup)
         duration_timer -= (1 if duration_timer > 0 else 0)
