@@ -55,7 +55,9 @@ CLOCK_SPD = 100  # the base clock speed, or arbitrary framerate - keep at 100
 current_spd = CLOCK_SPD  # the current speed of the game (may change)
 speed_timer = 0  # used to regulate when the current speed is changed
 slow_timer = 0 # used to regulate when the user slows their bike
-duration_timer = 0
+duration_timer = 0 # Timer used when the speed is activated - lasts for 5 seconds
+paused = False # Boolean for when the game is paused or not
+
 
 
 # decide on colors
@@ -190,6 +192,7 @@ def game_run():
     global CLOCK_SPD
     global current_spd
     global duration_timer
+    global paused
     
     global time
     global finalTimes
@@ -232,8 +235,17 @@ def game_run():
                 if event.key == pygame.K_ESCAPE:
                     done = True
 
+            #Pressing space bar pauses the game
+            if event.type == pygame.KEYUP:
                 if event.key == pygame.K_SPACE:
-                    paused()
+                    paused = True
+
+            #Waits for user input to unpause the game
+            while paused == True:
+                for event in pygame.event.get():
+                    if event.type == KEYUP:
+                        if event.key == pygame.K_SPACE:
+                            paused = False
             # elif event.type == pygame.KEYUP:
             #     if event.key == pygame.K_DOWN:
             #         pressed_down = False
@@ -285,6 +297,8 @@ def game_run():
                     if (powerup.type is pu.PowerUps.Type.SPEED or
                         powerup.type is pu.PowerUps.Type.NUKE):
                         pu.PowerUps.apply_to_all(bikes, powerup.type)
+                        # After x amount of time, powerup affects disappear
+                        duration_timer = 500
                     elif (powerup.type is pu.PowerUps.Type.MINE):
                         p = pu.PowerUps(screen_width, screen_height, pu.PowerUps.Type.ACTUALLY_MINE)
                         p.h *= 2
@@ -292,9 +306,6 @@ def game_run():
                         powerups.append(p)
                     elif (powerup.type is pu.PowerUps.Type.ACTUALLY_MINE):
                         bike.alive = False
-
-                        # After x amount of time, powerup affects disappear
-                    duration_timer = 500
 
                     powerups.remove(powerup)
         duration_timer -= (1 if duration_timer > 0 else 0)
@@ -306,17 +317,6 @@ def game_run():
         draw()
 
         # Pause the clock for a frame
-        clock.tick(current_spd)
-
-def paused():
-    global current_spd
-    paused = True
-    while paused:
-        for event in pygame.event.get():
-            if event.key == pygame.K_SPACE:
-                paused = False      
-            
-        pygame.display.update()
         clock.tick(current_spd)
 
 # when the loop is done, quit
