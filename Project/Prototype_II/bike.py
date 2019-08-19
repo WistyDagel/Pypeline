@@ -137,7 +137,7 @@ class Bike:
     # check if the foremost 1-pixel wide edge of the bike is in contact with a list of squares
     def touches(self, other):
         edge = self.get_leading_edge()
-        for piece in other.get_line():
+        for piece in other.line_pieces:
             if edge.overlaps(piece):
                 return True
         return False
