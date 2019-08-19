@@ -212,6 +212,8 @@ def game_run():
                 if event.key == pygame.K_ESCAPE:
                     done = True
 
+                if event.key == pygame.K_SPACE:
+                    paused()
             # elif event.type == pygame.KEYUP:
             #     if event.key == pygame.K_DOWN:
             #         pressed_down = False
@@ -276,6 +278,18 @@ def game_run():
 
         # Pause the clock for a frame
         clock.tick(current_spd)
+
+def paused():
+    global current_spd
+    paused = True
+    while paused:
+        for event in pygame.event.get():
+            if event.key == pygame.K_SPACE:
+                paused = False      
+            
+        pygame.display.update()
+        clock.tick(current_spd)
+
 # when the loop is done, quit
 #Initialize the Game
 game_run()
