@@ -201,7 +201,7 @@ class Bike:
             sq = square.Square(
                 piece.x,
                 piece.y,
-                piece.w,
-                piece.h
+                piece.w + (1 if self.Direction is Bike.Direction.LEFT else 0),
+                piece.h + (1 if self.Direction is Bike.Direction.UP else 0)
             )
             pygame.draw.rect(screen, self.color, sq.to_rect())
