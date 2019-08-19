@@ -196,5 +196,11 @@ class Bike:
         return self.SPD * self.s_multiplier
 
     def draw(self, screen):
-        for rect in self.line_pieces:
-            pygame.draw.rect(screen, self.color, rect.to_rect())
+        for piece in self.line_pieces:
+            sq = square.Square(
+                piece.x,
+                piece.y,
+                piece.w,
+                piece.h
+            )
+            pygame.draw.rect(screen, self.color, sq.to_rect())
