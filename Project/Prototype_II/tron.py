@@ -131,10 +131,12 @@ bikes[1].phase = True
 
 # Random number decides which power up is first
 decidesStartingPowerUp = random.randint(0, 3)
-if (decidesStartingPowerUp == 1 or decidesStartingPowerUp == 3):
+if (decidesStartingPowerUp == 1):
     startingPowerUp = pu.PowerUps.Type.SPEED
 elif (decidesStartingPowerUp == 2):
     startingPowerUp = pu.PowerUps.Type.MINE
+elif (decidesStartingPowerUp == 3):
+    startingPowerUp = pu.PowerUps.Type.PHASE
 else:
     startingPowerUp = pu.PowerUps.Type.NUKE
 
@@ -281,10 +283,12 @@ def game_run():
         delay = 10  # every x seconds, create a powerup
         decidesPowerUp = random.randint(0, 3)
         # Uses a random number to pick a random power up
-        if (decidesPowerUp == 1 or decidesPowerUp == 3):
+        if (decidesPowerUp == 1):
             randomPowerUp = pu.PowerUps.Type.SPEED
         elif (decidesPowerUp == 2):
             randomPowerUp = pu.PowerUps.Type.MINE
+        elif (decidesPowerUp == 3):
+            randomPowerUp = pu.PowerUps.Type.PHASE
         else:
             randomPowerUp = pu.PowerUps.Type.NUKE
 
@@ -306,6 +310,8 @@ def game_run():
                         powerups.append(p)
                     elif (powerup.type is pu.PowerUps.Type.ACTUALLY_MINE):
                         bike.alive = False
+                    elif (powerup.type is pu.PowerUps.Type.PHASE):
+                        bike.phase = True
 
                     powerups.remove(powerup)
         duration_timer -= (1 if duration_timer > 0 else 0)
