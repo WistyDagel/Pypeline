@@ -112,7 +112,7 @@ def draw():
     for powerup in powerups:
         pygame.draw.rect(screen, powerup.color, powerup.to_rect())
 
-    #draw the top bar and the timer
+    # draw the top bar and the timer
     screen.fill(GRAY, (0, 0, grid_cell_scl * (grid_width + 2), grid_cell_scl * 2 + 2)) 
     timer(time, timerbikes, finalTimes)
 
