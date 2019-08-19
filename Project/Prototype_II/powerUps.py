@@ -28,7 +28,7 @@ class PowerUps(square.Square):
     def apply_to_all(bikes, type):
         if (type is PowerUps.Type.SPEED):
             for bike in bikes:
-                bike.s_multiplier = 10
+                bike.s_multiplier = 2.5
         elif (type is PowerUps.Type.NUKE):
             for bike in bikes:
                 bike.cut()
