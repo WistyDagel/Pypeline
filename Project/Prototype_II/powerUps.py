@@ -20,7 +20,7 @@ class PowerUps(square.Square):
         self.w = 8
         self.h = 8
         self.x = math.ceil(random.randint(0, maxX - self.w / 2))
-        self.y = math.ceil(random.randint(0, maxY - self.h / 2))
+        self.y = math.ceil(random.randint(48, maxY - self.h / 2))
         self.type = type
         self.color = self.type.value
     
