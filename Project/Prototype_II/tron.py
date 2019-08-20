@@ -80,6 +80,8 @@ pygame.display.set_caption('Prototype II')
 first = True
 pygame.time.set_timer(USEREVENT+1, 1000)
 
+powerups = []
+
 #takes in the time, bikes and when they died and prints to the topbar
 def timer(time, timerbikes, finalTimes):
     timerspot = 4
@@ -92,7 +94,6 @@ def timer(time, timerbikes, finalTimes):
                 finalTimes[timerspot - 1] = time
             screen.blit(text_render(str(finalTimes[timerspot - 1]), timer_font, 40, bike.color), (((8 * timerspot) * grid_cell_scl), 0))
             timerspot -= 1
-
 
 # draw the background, grid, and squares
 def draw():
@@ -118,6 +119,8 @@ def draw():
         for bike in bikes:
             if not bike.overlaps(powerup):
                 pygame.draw.rect(screen, powerup.color, powerup.to_rect())
+            else:
+                powerups.remove(powerup)
 
     # draw the top bar and the timer
     screen.fill(GRAY, (0, 0, grid_cell_scl * (grid_width + 2), grid_cell_scl * 2 + 2)) 
@@ -129,6 +132,7 @@ def draw():
 # instantiate a bike object
 def generate_bikes(gamemode):
     global bikes
+    global powerups
     if(gamemode == 1):
         bikes = [b.Bike(0, (grid_cell_scl * 2) + 2, b.Bike.Direction.RIGHT, c.PURPLE, pygame.K_q, pygame.K_w, pygame.K_e), 
                 b.Bike(screen_width - b.Bike.WEIGHT, screen_height - b.Bike.WEIGHT, b.Bike.Direction.LEFT, c.YELLOW, pygame.K_LEFT, pygame.K_DOWN, pygame.K_RIGHT),
@@ -149,6 +153,8 @@ def generate_bikes(gamemode):
                 b.Bike(screen_width - b.Bike.WEIGHT, screen_height - b.Bike.WEIGHT, b.Bike.Direction.LEFT, c.YELLOW, pygame.K_LEFT, pygame.K_DOWN, pygame.K_RIGHT),
                 b.Bike(0, screen_height - b.Bike.WEIGHT, b.Bike.Direction.UP, c.BLUE, pygame.K_z, pygame.K_x, pygame.K_c),
                 b.Bike(screen_width - b.Bike.WEIGHT, grid_cell_scl * 2, b.Bike.Direction.DOWN, c.GREEN, pygame.K_i, pygame.K_o, pygame.K_p)]      
+    
+    powerups.clear()
 
 # Random number decides which power up is first
 decidesStartingPowerUp = random.randint(0, 3)
