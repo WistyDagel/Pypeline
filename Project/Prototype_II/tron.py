@@ -8,6 +8,7 @@ import pygame
 import math
 import random
 import datetime
+from sys import exit
 
 # import tron
 from pygame.locals import *
@@ -59,6 +60,8 @@ slow_timer = 0 # used to regulate when the user slows their bike
 duration_timer = 0 # Timer used when the speed is activated - lasts for 5 seconds
 paused = False # Boolean for when the game is paused or not
 game_modes = {"1 V 1" : 2, "2 V 2" : 4, "3 V 1" : 4, "Free For All" : 4} # Dictionary for game modes
+menu=True #Menu boolean that is set whenever the user is on the main menu
+mode_menu=True #Mode menu boolean that is set whenever the user is on the game mode menu
 
 # decide on colors
 bike_color = c.YELLOW
@@ -77,6 +80,8 @@ pygame.display.set_caption('Prototype II')
 first = True
 pygame.time.set_timer(USEREVENT+1, 1000)
 
+powerups = []
+
 #takes in the time, bikes and when they died and prints to the topbar
 def timer(time, timerbikes, finalTimes):
     bikesleft = len(timerbikes)
@@ -90,7 +95,6 @@ def timer(time, timerbikes, finalTimes):
                 finalTimes[timerspot - 1] = time
             screen.blit(text_render(str(finalTimes[timerspot - 1]), timer_font, 40, bike.color), (((8 * timerspot) * grid_cell_scl), 0))
             timerspot -= 1
-
 
 # draw the background, grid, and squares
 def draw():
@@ -116,6 +120,8 @@ def draw():
         for bike in bikes:
             if not bike.overlaps(powerup):
                 pygame.draw.rect(screen, powerup.color, powerup.to_rect())
+            else:
+                powerups.remove(powerup)
 
     # draw the top bar and the timer
     screen.fill(GRAY, (0, 0, grid_cell_scl * (grid_width + 2), grid_cell_scl * 2 + 2)) 
@@ -127,6 +133,7 @@ def draw():
 # instantiate a bike object
 def generate_bikes(gamemode):
     global bikes
+    global powerups
     if(gamemode == 1):
         bikes = [b.Bike(0, (grid_cell_scl * 2) + 2, b.Bike.Direction.RIGHT, c.PURPLE, pygame.K_q, pygame.K_w, pygame.K_e), 
                 b.Bike(screen_width - b.Bike.WEIGHT, screen_height - b.Bike.WEIGHT, b.Bike.Direction.LEFT, c.YELLOW, pygame.K_LEFT, pygame.K_DOWN, pygame.K_RIGHT),
@@ -147,6 +154,8 @@ def generate_bikes(gamemode):
                 b.Bike(screen_width - b.Bike.WEIGHT, screen_height - b.Bike.WEIGHT, b.Bike.Direction.LEFT, c.YELLOW, pygame.K_LEFT, pygame.K_DOWN, pygame.K_RIGHT),
                 b.Bike(0, screen_height - b.Bike.WEIGHT, b.Bike.Direction.UP, c.BLUE, pygame.K_z, pygame.K_x, pygame.K_c),
                 b.Bike(screen_width - b.Bike.WEIGHT, grid_cell_scl * 2, b.Bike.Direction.DOWN, c.GREEN, pygame.K_i, pygame.K_o, pygame.K_p)]      
+    
+    powerups.clear()
 
 # Random number decides which power up is first
 decidesStartingPowerUp = random.randint(0, 3)
@@ -165,12 +174,15 @@ powerups = [pu.PowerUps(screen_width, screen_height, startingPowerUp)]
 clock = pygame.time.Clock()
 
 def main_menu():
-    menu=True
     selected="start"
+    global menu
 
     while menu:
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    exit()
                 if event.key == pygame.K_UP:
                     selected = "start"
                 elif event.key == pygame.K_DOWN:
@@ -179,7 +191,7 @@ def main_menu():
                     if selected == "start":
                         game_mode_menu()                      
                     if selected == "quit":
-                        menu = False
+                        exit()
 
         screen.fill(BLACK)
         title = text_render("TRON", font, 90, GRID_FG)
@@ -205,12 +217,15 @@ def main_menu():
         pygame.display.set_caption("Main Menu")
 
 def game_mode_menu():
-    mode_menu = True
     selected = "1 V 1"
-
+    global mode_menu
     while mode_menu:
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
+                if event.type == pygame.QUIT:
+                    mode_menu = False
+                    pygame.quit()
+                    exit()
                 if event.key == pygame.K_UP:
                     selected = "1 V 1"
                 elif event.key == pygame.K_RIGHT:
@@ -222,16 +237,13 @@ def game_mode_menu():
                 if event.key == pygame.K_RETURN:
                     if selected == "1 V 1":
                         generate_bikes(1)
-                        game_run()                
+                        game_run()
                     if selected == "2 V 2":
                         generate_bikes(2)
-                        game_run()
                     if selected == "3 V 1":
                         generate_bikes(3)
-                        game_run()
                     if selected == "Free For All":
-                        generate_bikes(4)
-                        game_run()
+                        generate_bikes(4)                        
 
         screen.fill(BLACK)
         title = text_render("Game Modes", font, 75, GRID_FG)
@@ -270,6 +282,8 @@ def game_mode_menu():
 def game_run():
     # run while not done
     done = False
+    mode_menu = False
+
 
     pressed_down = False
 
