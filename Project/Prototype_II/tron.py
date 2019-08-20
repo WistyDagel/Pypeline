@@ -278,6 +278,10 @@ def game_mode_menu():
         clock.tick(FPS)
         pygame.display.set_caption("Game Mode")
 
+# Chris notes
+# Tutorial Menu - that states the controls for each player 
+# Music for menu and game
+
 def game_run():
     # run while not done
     done = False
