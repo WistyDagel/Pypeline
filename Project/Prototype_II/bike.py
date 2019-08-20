@@ -199,14 +199,10 @@ class Bike:
 
     def draw(self, screen):
         for piece in self.line_pieces:
-            sq = square.Square(
-                piece.x,
-                piece.y,
-                piece.w + (2 if self.Direction is Bike.Direction.LEFT else 0),
-                piece.h + (2 if self.Direction is Bike.Direction.UP else 0)
-            )
-            pygame.draw.rect(screen, self.color, sq.to_rect())
+            pygame.draw.rect(screen, self.color, piece.to_rect())
 
-            # sq = square.Square(
-
-            # )
+    def overlaps(self, square):
+        for piece in self.line_pieces:
+            if piece.overlaps(square):
+                return True
+        return False
