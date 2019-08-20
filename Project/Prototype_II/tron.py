@@ -38,6 +38,7 @@ GRAY = (128,128,128)
 #Font
 font = "Assets/TRON.TTF"
 timer_font = "Assets/clock.TTF"
+arcade_font = "Assets/ARCADE_N.TTF"
 
 #Framerate
 clock = pygame.time.Clock()
@@ -165,15 +166,15 @@ def main_menu():
                         menu = False
 
         screen.fill(BLACK)
-        title = text_render("TRON", font, 90, BLUE)
+        title = text_render("TRON", font, 90, GRID_FG)
         if selected == "start":
-            start_text = text_render("> START <", font, 50, YELLOW)
+            start_text = text_render("> START <", arcade_font, 50, YELLOW)
         else:
-            start_text = text_render("START", font, 50, WHITE)
+            start_text = text_render("START", arcade_font, 50, WHITE)
         if selected == "quit":
-            quit_text = text_render("> QUIT <", font, 50, YELLOW)
+            quit_text = text_render("> QUIT <", arcade_font, 50, YELLOW)
         else:
-            quit_text = text_render("QUIT", font, 50, WHITE)
+            quit_text = text_render("QUIT", arcade_font, 50, WHITE)
     
         title_rect = title.get_rect()
         start_rect = start_text.get_rect()
@@ -199,37 +200,37 @@ def game_mode_menu():
                 elif event.key == pygame.K_RIGHT:
                     selected = "2 V 2"
                 elif event.key == pygame.K_DOWN:
-                    selected = "3 V 1"
-                elif event.key == pygame.K_LEFT:
                     selected = "Free For All"
+                elif event.key == pygame.K_LEFT:
+                    selected = "3 V 1"
                 if event.key == pygame.K_RETURN:
                     if selected == "1 V 1":
-                        game_run();                
+                        game_run()                
                     if selected == "2 V 2":
-                        game_run();
+                        game_run()
                     if selected == "3 V 1":
-                        game_run();
+                        game_run()
                     if selected == "Free For All":
-                        game_run();
+                        game_run()
 
         screen.fill(BLACK)
-        title = text_render("Game Modes", font, 75, BLUE)
+        title = text_render("Game Modes", font, 75, GRID_FG)
         if selected == "1 V 1":
-            one_text = text_render("> 1 V 1 <", font, 30, YELLOW)
+            one_text = text_render("> 1 V 1 <", arcade_font, 30, YELLOW)
         else:
-            one_text = text_render("1 V 1", font, 30, WHITE)
+            one_text = text_render("1 V 1", arcade_font, 30, WHITE)
         if selected == "2 V 2":
-            two_text = text_render("> 2 V 2 <", font, 30, YELLOW)
+            two_text = text_render("> 2 V 2 <", arcade_font, 30, YELLOW)
         else:
-            two_text = text_render("2 V 2", font, 30, WHITE)
+            two_text = text_render("2 V 2", arcade_font, 30, WHITE)
         if selected == "3 V 1":
-            three_text = text_render("> 3 V 1 <", font, 30, YELLOW)
+            three_text = text_render("> 3 V 1 <", arcade_font, 30, YELLOW)
         else:
-            three_text = text_render(" 3 V 1 ", font, 30, WHITE)
+            three_text = text_render(" 3 V 1 ", arcade_font, 30, WHITE)
         if selected == "Free For All":
-            free_text = text_render("> Free For All <", font, 24, YELLOW)
+            free_text = text_render("> Free For All <", arcade_font, 24, YELLOW)
         else:
-            free_text = text_render(" Free For All ", font, 24, WHITE)
+            free_text = text_render(" Free For All ", arcade_font, 24, WHITE)
     
         title_rect = title.get_rect()
         one_rect = one_text.get_rect()
@@ -238,9 +239,9 @@ def game_mode_menu():
         # Main Menu Text
         screen.blit(title, (screen_width/2 - (title_rect[2]/2), 80))
         screen.blit(one_text, (screen_width/2 - (one_rect[2]/2), 300))
-        screen.blit(two_text, (550, 400))
-        screen.blit(three_text, (screen_width/2 - (three_rect[2]/2), 500))
-        screen.blit(free_text, (25, 410))
+        screen.blit(two_text, (625, 400))
+        screen.blit(three_text, (50, 410))  
+        screen.blit(free_text, (260, 525))
 
         pygame.display.update()
         clock.tick(FPS)
@@ -297,6 +298,7 @@ def game_run():
                 # pressing esc also closes the window
                 if event.key == pygame.K_ESCAPE:
                     done = True
+                    main_menu()
 
             #Pressing space bar pauses the game
             if event.type == pygame.KEYUP:
@@ -391,6 +393,6 @@ def game_run():
 
 # when the loop is done, quit
 #Initialize the Game
-game_run()
+main_menu()
 pygame.quit()
 quit()
