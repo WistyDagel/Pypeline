@@ -79,7 +79,7 @@ pygame.time.set_timer(USEREVENT+1, 1000)
 
 #takes in the time, bikes and when they died and prints to the topbar
 def timer(time, timerbikes, finalTimes):
-    timerspot = 4;
+    timerspot = 4
     for bike in timerbikes:
         if(bike.alive):
             screen.blit(text_render(str(time), timer_font, 40, bike.color), (((8 * timerspot) * grid_cell_scl), 0))
@@ -146,11 +146,6 @@ def generate_bikes(gamemode):
                 b.Bike(screen_width - b.Bike.WEIGHT, screen_height - b.Bike.WEIGHT, b.Bike.Direction.LEFT, c.YELLOW, pygame.K_LEFT, pygame.K_DOWN, pygame.K_RIGHT),
                 b.Bike(0, screen_height - b.Bike.WEIGHT, b.Bike.Direction.UP, c.BLUE, pygame.K_z, pygame.K_x, pygame.K_c),
                 b.Bike(screen_width - b.Bike.WEIGHT, grid_cell_scl * 2, b.Bike.Direction.DOWN, c.GREEN, pygame.K_i, pygame.K_o, pygame.K_p)]      
-
-# bikes[0].phase = True
-bikes[1].phase = True
-# bikes[2].phase = True
-# bikes[3].phase = True
 
 # Random number decides which power up is first
 decidesStartingPowerUp = random.randint(0, 3)
