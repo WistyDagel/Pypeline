@@ -148,7 +148,7 @@ def generate_bikes(gamemode):
                 b.Bike(screen_width - b.Bike.WEIGHT, grid_cell_scl * 2, b.Bike.Direction.DOWN, c.GREEN, pygame.K_i, pygame.K_o, pygame.K_p)]      
 
 # bikes[0].phase = True
-bikes[1].phase = True
+# bikes[1].phase = True
 # bikes[2].phase = True
 # bikes[3].phase = True
 
@@ -225,12 +225,16 @@ def game_mode_menu():
                     selected = "3 V 1"
                 if event.key == pygame.K_RETURN:
                     if selected == "1 V 1":
+                        generate_bikes(1)
                         game_run()                
                     if selected == "2 V 2":
+                        generate_bikes(2)
                         game_run()
                     if selected == "3 V 1":
+                        generate_bikes(3)
                         game_run()
                     if selected == "Free For All":
+                        generate_bikes(4)
                         game_run()
 
         screen.fill(BLACK)
