@@ -112,7 +112,9 @@ def draw():
 
     # powerup
     for powerup in powerups:
-        pygame.draw.rect(screen, powerup.color, powerup.to_rect())
+        for bike in bikes:
+            if not bike.overlaps(powerup):
+                pygame.draw.rect(screen, powerup.color, powerup.to_rect())
 
     # draw the top bar and the timer
     screen.fill(GRAY, (0, 0, grid_cell_scl * (grid_width + 2), grid_cell_scl * 2 + 2)) 
@@ -122,10 +124,28 @@ def draw():
     pygame.display.flip()
 
 # instantiate a bike object
-bikes = [b.Bike(0, (grid_cell_scl * 2) + 2, b.Bike.Direction.RIGHT, c.PURPLE, pygame.K_q, pygame.K_w, pygame.K_e), 
-         b.Bike(screen_width - b.Bike.WEIGHT, screen_height - b.Bike.WEIGHT, b.Bike.Direction.LEFT, c.YELLOW, pygame.K_LEFT, pygame.K_DOWN, pygame.K_RIGHT),
-         b.Bike(0, screen_height - b.Bike.WEIGHT, b.Bike.Direction.UP, c.BLUE, pygame.K_z, pygame.K_x, pygame.K_c),
-         b.Bike(screen_width - b.Bike.WEIGHT, grid_cell_scl * 2, b.Bike.Direction.DOWN, c.GREEN, pygame.K_i, pygame.K_o, pygame.K_p)]           
+def generate_bikes(gamemode):
+    global bikes
+    if(gamemode == 1):
+        bikes = [b.Bike(0, (grid_cell_scl * 2) + 2, b.Bike.Direction.RIGHT, c.PURPLE, pygame.K_q, pygame.K_w, pygame.K_e), 
+                b.Bike(screen_width - b.Bike.WEIGHT, screen_height - b.Bike.WEIGHT, b.Bike.Direction.LEFT, c.YELLOW, pygame.K_LEFT, pygame.K_DOWN, pygame.K_RIGHT),
+                b.Bike(0, screen_height - b.Bike.WEIGHT, b.Bike.Direction.UP, c.BLUE, pygame.K_z, pygame.K_x, pygame.K_c),
+                b.Bike(screen_width - b.Bike.WEIGHT, grid_cell_scl * 2, b.Bike.Direction.DOWN, c.GREEN, pygame.K_i, pygame.K_o, pygame.K_p)]      
+    if(gamemode == 2):
+        bikes = [b.Bike(0, (grid_cell_scl * 2) + 2, b.Bike.Direction.RIGHT, c.PURPLE, pygame.K_q, pygame.K_w, pygame.K_e), 
+                b.Bike(screen_width - b.Bike.WEIGHT, screen_height - b.Bike.WEIGHT, b.Bike.Direction.LEFT, c.YELLOW, pygame.K_LEFT, pygame.K_DOWN, pygame.K_RIGHT),
+                b.Bike(0, screen_height - b.Bike.WEIGHT, b.Bike.Direction.UP, c.BLUE, pygame.K_z, pygame.K_x, pygame.K_c),
+                b.Bike(screen_width - b.Bike.WEIGHT, grid_cell_scl * 2, b.Bike.Direction.DOWN, c.GREEN, pygame.K_i, pygame.K_o, pygame.K_p)]      
+    if(gamemode == 3):
+        bikes = [b.Bike(0, (grid_cell_scl * 2) + 2, b.Bike.Direction.RIGHT, c.PURPLE, pygame.K_q, pygame.K_w, pygame.K_e), 
+                b.Bike(screen_width - b.Bike.WEIGHT, screen_height - b.Bike.WEIGHT, b.Bike.Direction.LEFT, c.YELLOW, pygame.K_LEFT, pygame.K_DOWN, pygame.K_RIGHT),
+                b.Bike(0, screen_height - b.Bike.WEIGHT, b.Bike.Direction.UP, c.BLUE, pygame.K_z, pygame.K_x, pygame.K_c),
+                b.Bike(screen_width - b.Bike.WEIGHT, grid_cell_scl * 2, b.Bike.Direction.DOWN, c.GREEN, pygame.K_i, pygame.K_o, pygame.K_p)]      
+    if(gamemode == 4):
+        bikes = [b.Bike(0, (grid_cell_scl * 2) + 2, b.Bike.Direction.RIGHT, c.PURPLE, pygame.K_q, pygame.K_w, pygame.K_e), 
+                b.Bike(screen_width - b.Bike.WEIGHT, screen_height - b.Bike.WEIGHT, b.Bike.Direction.LEFT, c.YELLOW, pygame.K_LEFT, pygame.K_DOWN, pygame.K_RIGHT),
+                b.Bike(0, screen_height - b.Bike.WEIGHT, b.Bike.Direction.UP, c.BLUE, pygame.K_z, pygame.K_x, pygame.K_c),
+                b.Bike(screen_width - b.Bike.WEIGHT, grid_cell_scl * 2, b.Bike.Direction.DOWN, c.GREEN, pygame.K_i, pygame.K_o, pygame.K_p)]      
 
 # bikes[0].phase = True
 bikes[1].phase = True
@@ -261,10 +281,7 @@ def game_run():
     global time
     global finalTimes
     global timerbikes
-    timerbikes = [b.Bike(0, (grid_cell_scl * 2) + 2, b.Bike.Direction.RIGHT, c.PURPLE, pygame.K_q, pygame.K_w, pygame.K_e), 
-         b.Bike(screen_width - b.Bike.WEIGHT, screen_height - b.Bike.WEIGHT, b.Bike.Direction.LEFT, c.YELLOW, pygame.K_LEFT, pygame.K_DOWN, pygame.K_RIGHT),
-         b.Bike(0, screen_height - b.Bike.WEIGHT, b.Bike.Direction.UP, c.BLUE, pygame.K_z, pygame.K_x, pygame.K_c),
-         b.Bike(screen_width - b.Bike.WEIGHT, grid_cell_scl * 2, b.Bike.Direction.DOWN, c.GREEN, pygame.K_i, pygame.K_o, pygame.K_p)]         
+    timerbikes = bikes.copy()       
     finalTimes = [0, 0, 0, 0]
     time = 0
     pygame.time.set_timer(USEREVENT+1, 1000)
@@ -363,23 +380,23 @@ def game_run():
                 # Stops the powerup from spawning ontop of a line
                 # If it spawns on a line, then it will remove it from the list and recreate a new powerup
                 # NEEDS WORK
-                    if (powerup.collides(bike)):
-                        if (powerup.type is pu.PowerUps.Type.SPEED or
-                            powerup.type is pu.PowerUps.Type.NUKE):
-                            pu.PowerUps.apply_to_all(bikes, powerup.type)
-                            # After x amount of time, powerup affects disappear
-                            duration_timer = 500
-                        elif (powerup.type is pu.PowerUps.Type.MINE):
-                            p = pu.PowerUps(screen_width, screen_height, pu.PowerUps.Type.ACTUALLY_MINE)
-                            p.h *= 2
-                            p.w *= 2
-                            powerups.append(p)
-                        elif (powerup.type is pu.PowerUps.Type.ACTUALLY_MINE):
-                            bike.alive = False
-                        elif (powerup.type is pu.PowerUps.Type.PHASE):
-                            bike.phase = True
+                if (powerup.collides(bike)):
+                    if (powerup.type is pu.PowerUps.Type.SPEED or
+                        powerup.type is pu.PowerUps.Type.NUKE):
+                        pu.PowerUps.apply_to_all(bikes, powerup.type)
+                        # After x amount of time, powerup affects disappear
+                        duration_timer = 500
+                    elif (powerup.type is pu.PowerUps.Type.MINE):
+                        p = pu.PowerUps(screen_width, screen_height, pu.PowerUps.Type.ACTUALLY_MINE)
+                        p.h *= 2
+                        p.w *= 2
+                        powerups.append(p)
+                    elif (powerup.type is pu.PowerUps.Type.ACTUALLY_MINE):
+                        bike.alive = False
+                    elif (powerup.type is pu.PowerUps.Type.PHASE):
+                        bike.phase = True
 
-                        powerups.remove(powerup)
+                    powerups.remove(powerup)
         duration_timer -= (1 if duration_timer > 0 else 0)
         if duration_timer == 0:
             for x in range(len(bikes)):
