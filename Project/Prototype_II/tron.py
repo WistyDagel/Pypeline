@@ -145,7 +145,7 @@ def generate_bikes(gamemode):
                 b.Bike(screen_width - b.Bike.WEIGHT, grid_cell_scl * 2, b.Bike.Direction.DOWN, c.GREEN, pygame.K_i, pygame.K_o, pygame.K_p)]      
 
 # bikes[0].phase = True
-bikes[1].phase = True
+#bikes[1].phase = True
 # bikes[2].phase = True
 # bikes[3].phase = True
 
@@ -356,7 +356,8 @@ def game_run():
             for other in bikes:
                 if bike is not other:
                     if bike.phase is not True:
-                        if bike.touches(other):
+                        if bike.touches(other) & bike.alive:
+                            other.kills += 1
                             bike.alive = False
 
                     
@@ -410,6 +411,6 @@ def game_run():
 
 # when the loop is done, quit
 #Initialize the Game
-game_run()
+main_menu()
 pygame.quit()
 quit()

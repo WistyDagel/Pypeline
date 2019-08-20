@@ -45,6 +45,7 @@ class Bike:
         self.direction = self.start_dir
         self.color = color
         self.line_pieces = []
+        self.kills = 0
 
         self.left_key = left_key
         self.slow_key = slow_key
