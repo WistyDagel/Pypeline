@@ -68,7 +68,7 @@ bike_color = c.YELLOW
 powerup_color = c.RED
 
 GRID_BG = c.BLACK
-GRID_FG = (40, 140, 160)
+GRID_FG = c.GRID_BLUE
 
 # initialize pygame module
 # def initialize():
@@ -342,6 +342,7 @@ def game_run():
     global time
     global finalTimes
     global timerbikes
+    global slow_timer
     timerbikes = bikes.copy()       
     finalTimes = [0, 0, 0, 0]
     time = 0
@@ -365,13 +366,9 @@ def game_run():
                     if event.key == bike.right_key:
                         bike.turn(1)
                     elif event.key == bike.slow_key:
-                        bike.cut()
+                        pressed_down = True
                     elif event.key == bike.left_key:
                         bike.turn(-1)
-
-                    # # press down to slow the bike
-                    # if event.key == pygame.K_DOWN:
-                    #     pressed_down = True
 
                 # pressing esc also closes the window
                 if event.key == pygame.K_ESCAPE:
@@ -389,19 +386,11 @@ def game_run():
                     if event.type == KEYUP:
                         if event.key == pygame.K_SPACE:
                             paused = False
-            # elif event.type == pygame.KEYUP:
-            #     if event.key == pygame.K_DOWN:
-            #         pressed_down = False
-            #         bike.s_multiplier = 1
+
 
         # Pressing the down key closes the window 
         # Starts a timer allowing you to only slow down for a specific amount of time
-        # if pressed_down:
-        #     bike.s_multiplier = .6
-        #     slow_timer = 500
-        # slow_timer -= (1 if slow_timer > 0 else 0)
-        # if slow_timer == 0:
-        #     bike.v_multiplier = 1
+
 
         # advance the bike in the direction it is goings
         for bike in bikes:
