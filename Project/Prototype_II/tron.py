@@ -301,10 +301,10 @@ def tutorial_menu():
 
         screen.fill(BLACK)
         title = text_render("Controls", font, 75, GRID_FG)
-        player1_text = text_render("Player 1: Q - Turn Left | W - Slow Bike | E - Turn right", arcade_font, 12, YELLOW)
-        player2_text = text_render("Player 2: I - Turn Left | O - Slow Bike | P - Turn right", arcade_font, 12, YELLOW)
-        player3_text = text_render("Player 3: Z - Turn Left | X - Slow Bike | C - Turn right", arcade_font, 12, YELLOW)
-        player4_text = text_render("Player 4: L Arrow - Turn Left | D Arrow - Slow Bike | R Arrow - Turn Right", arcade_font, 11, YELLOW)
+        player1_text = text_render("Player 1: Q - Turn Left | W - Slow Bike | E - Turn right", arcade_font, 12, bikes[0].color)
+        player2_text = text_render("Player 2: I - Turn Left | O - Slow Bike | P - Turn right", arcade_font, 12, bikes[1].color)
+        player3_text = text_render("Player 3: Z - Turn Left | X - Slow Bike | C - Turn right", arcade_font, 12, bikes[2].color if len(bikes) == 4 else YELLOW)
+        player4_text = text_render("Player 4: L Arrow - Turn Left | D Arrow - Slow Bike | R Arrow - Turn Right", arcade_font, 11, bikes[3].color if len(bikes) == 4 else YELLOW)
         continue_text = text_render("Press Enter/Return to start game...", arcade_font, 15, GRID_FG)
     
         title_rect = title.get_rect()
