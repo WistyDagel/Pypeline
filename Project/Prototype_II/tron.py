@@ -296,6 +296,7 @@ def game_run():
     global current_spd
     global duration_timer
     global paused
+    global slow_timer
     
     global time
     global finalTimes
@@ -323,7 +324,7 @@ def game_run():
                     if event.key == bike.right_key:
                         bike.turn(1)
                     elif event.key == bike.slow_key:
-                        bike.cut()
+                        pressed_down = not pressed_down
                     elif event.key == bike.left_key:
                         bike.turn(-1)
 
@@ -351,15 +352,6 @@ def game_run():
             #     if event.key == pygame.K_DOWN:
             #         pressed_down = False
             #         bike.s_multiplier = 1
-
-        # Pressing the down key closes the window 
-        # Starts a timer allowing you to only slow down for a specific amount of time
-        # if pressed_down:
-        #     bike.s_multiplier = .6
-        #     slow_timer = 500
-        # slow_timer -= (1 if slow_timer > 0 else 0)
-        # if slow_timer == 0:
-        #     bike.v_multiplier = 1
 
         # advance the bike in the direction it is goings
         for bike in bikes:
@@ -413,6 +405,16 @@ def game_run():
                         bike.phase = True
 
                     powerups.remove(powerup)
+                
+                # Pressing the down key closes the window 
+                # Starts a timer allowing you to only slow down for a specific amount of time
+                if pressed_down:
+                    bike.s_multiplier = .6
+                    slow_timer = 500
+                slow_timer -= (1 if slow_timer > 0 else 0)
+                if slow_timer == 0:
+                    bike.s_multiplier = 1
+
         duration_timer -= (1 if duration_timer > 0 else 0)
         if duration_timer == 0:
             for x in range(len(bikes)):
