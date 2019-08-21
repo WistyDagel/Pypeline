@@ -240,10 +240,15 @@ def game_mode_menu():
                         game_run()
                     if selected == "2 V 2":
                         generate_bikes(2)
+                        game_run()
                     if selected == "3 V 1":
                         generate_bikes(3)
+                        game_run()
                     if selected == "Free For All":
-                        generate_bikes(4)                        
+                        generate_bikes(4)      
+                        game_run()
+                if event.key == pygame.K_ESCAPE:
+                    main_menu()
 
         screen.fill(BLACK)
         title = text_render("Game Modes", font, 75, GRID_FG)
