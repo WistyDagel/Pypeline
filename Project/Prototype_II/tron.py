@@ -84,16 +84,17 @@ powerups = []
 
 #takes in the time, bikes and when they died and prints to the topbar
 def timer(time, timerbikes, finalTimes):
-    timerspot = 4
+    bikesleft = len(timerbikes)
+    posistion = 40 / (bikesleft + 1)
     for bike in timerbikes:
         if(bike.alive):
-            screen.blit(text_render(str(time), timer_font, 40, bike.color), (((8 * timerspot) * grid_cell_scl), 0))
-            timerspot -= 1
+            screen.blit(text_render(str(time), timer_font, 40, bike.color), (((posistion * bikesleft) * (grid_cell_scl + grid_margin)), 0))
+            bikesleft -= 1
         else:
-            if(finalTimes[timerspot - 1] == 0):
-                finalTimes[timerspot - 1] = time
-            screen.blit(text_render(str(finalTimes[timerspot - 1]), timer_font, 40, bike.color), (((8 * timerspot) * grid_cell_scl), 0))
-            timerspot -= 1
+            if(finalTimes[bikesleft - 1] == 0):
+                finalTimes[bikesleft - 1] = time
+            screen.blit(text_render(str(finalTimes[bikesleft - 1]), timer_font, 40, bike.color), (((posistion * bikesleft) * (grid_cell_scl + grid_margin)), 0))
+            bikesleft -= 1
 
 # draw the background, grid, and squares
 def draw():
@@ -117,6 +118,8 @@ def draw():
     # powerup
     for powerup in powerups:
         for bike in bikes:
+            # Stops the power ups from spawning on a line.
+            # Removes the power up from the list so it does not spawn the second a player dies.
             if not bike.overlaps(powerup):
                 pygame.draw.rect(screen, powerup.color, powerup.to_rect())
             else:
@@ -414,7 +417,8 @@ def game_run():
             for other in bikes:
                 if bike is not other:
                     if bike.phase is not True:
-                        if bike.touches(other):
+                        if bike.touches(other) & bike.alive:
+                            other.kills += 1
                             bike.alive = False
 
                     
@@ -435,9 +439,6 @@ def game_run():
 
         for powerup in powerups:
             for bike in bikes:
-                # Stops the powerup from spawning ontop of a line
-                # If it spawns on a line, then it will remove it from the list and recreate a new powerup
-                # NEEDS WORK
                 if (powerup.collides(bike)):
                     if (powerup.type is pu.PowerUps.Type.SPEED or
                         powerup.type is pu.PowerUps.Type.NUKE):
