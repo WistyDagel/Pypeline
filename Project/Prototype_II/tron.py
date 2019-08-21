@@ -236,13 +236,16 @@ def game_mode_menu():
                 if event.key == pygame.K_RETURN:
                     if selected == "1 V 1":
                         generate_bikes(1)
-                        game_run()
+                        tutorial_menu()
                     if selected == "2 V 2":
                         generate_bikes(2)
+                        tutorial_menu()
                     if selected == "3 V 1":
                         generate_bikes(3)
+                        tutorial_menu()
                     if selected == "Free For All":
-                        generate_bikes(4)                        
+                        generate_bikes(4)
+                        tutorial_menu()
 
         screen.fill(BLACK)
         title = text_render("Game Modes", font, 75, GRID_FG)
@@ -265,7 +268,6 @@ def game_mode_menu():
     
         title_rect = title.get_rect()
         one_rect = one_text.get_rect()
-        three_rect = three_text.get_rect()
     
         # Main Menu Text
         screen.blit(title, (screen_width/2 - (title_rect[2]/2), 80))
@@ -282,11 +284,50 @@ def game_mode_menu():
 # Tutorial Menu - that states the controls for each player 
 # Music for menu and game
 
+def tutorial_menu():
+    global mode_menu
+    while mode_menu:
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+                if event.type == pygame.QUIT:
+                    mode_menu = False
+                    pygame.quit()
+                    exit()
+                if event.key == pygame.K_RETURN:
+                    game_run()
+
+        screen.fill(BLACK)
+        title = text_render("Controls", font, 75, GRID_FG)
+        player1_text = text_render("Player 1: Q - Turn Left | W - Slow Bike | E - Turn right", arcade_font, 12, YELLOW)
+        player2_text = text_render("Player 2: I - Turn Left | O - Slow Bike | P - Turn right", arcade_font, 12, YELLOW)
+        player3_text = text_render("Player 3: Z - Turn Left | X - Slow Bike | C - Turn right", arcade_font, 12, YELLOW)
+        player4_text = text_render("Player 4: L Arrow - Turn Left | D Arrow - Slow Bike | R Arrow - Turn Right", arcade_font, 11, YELLOW)
+        continue_text = text_render("Press Enter/Return to start game...", arcade_font, 15, GRID_FG)
+    
+        title_rect = title.get_rect()
+        player1_rect = player1_text.get_rect()
+        player2_rect = player2_text.get_rect()
+        player3_rect = player3_text.get_rect()
+        player4_rect = player4_text.get_rect()
+        continue_rect = continue_text.get_rect()
+
+        # Main Menu Text
+        screen.blit(title, (screen_width/2 - (title_rect[2]/2), 20))
+        screen.blit(player1_text, (screen_width/2 - (player1_rect[2]/2), 200))
+        screen.blit(player2_text, (screen_width/2 - (player2_rect[2]/2), 300))
+        screen.blit(player3_text, (screen_width/2 - (player3_rect[2]/2), 400))  
+        screen.blit(player4_text, (screen_width/2 - (player4_rect[2]/2), 500))
+        screen.blit(continue_text, (screen_width/2 - (continue_rect[2]/2), 600))
+
+        pygame.display.update()
+        clock.tick(FPS)
+        pygame.display.set_caption("Game Mode")
+
+
 def game_run():
     # run while not done
     done = False
     mode_menu = False
-
 
     pressed_down = False
 
