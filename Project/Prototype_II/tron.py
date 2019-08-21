@@ -118,6 +118,8 @@ def draw():
     # powerup
     for powerup in powerups:
         for bike in bikes:
+            # Stops the power ups from spawning on a line.
+            # Removes the power up from the list so it does not spawn the second a player dies.
             if not bike.overlaps(powerup):
                 pygame.draw.rect(screen, powerup.color, powerup.to_rect())
             else:
@@ -401,9 +403,6 @@ def game_run():
 
         for powerup in powerups:
             for bike in bikes:
-                # Stops the powerup from spawning ontop of a line
-                # If it spawns on a line, then it will remove it from the list and recreate a new powerup
-                # NEEDS WORK
                 if (powerup.collides(bike)):
                     if (powerup.type is pu.PowerUps.Type.SPEED or
                         powerup.type is pu.PowerUps.Type.NUKE):
