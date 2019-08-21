@@ -85,7 +85,7 @@ powerups = []
 #takes in the time, bikes and when they died and prints to the topbar
 def timer(time, timerbikes, finalTimes):
     bikesleft = len(timerbikes)
-    posistion = 32 / bikesleft
+    posistion = 40 / (bikesleft + 1)
     for bike in timerbikes:
         if(bike.alive):
             screen.blit(text_render(str(time), timer_font, 40, bike.color), (((posistion * bikesleft) * (grid_cell_scl + grid_margin)), 0))
