@@ -360,7 +360,6 @@ def game_run():
     global time
     global finalTimes
     global timerbikes
-    global slow_timer
     timerbikes = bikes.copy()       
     finalTimes = [0, 0, 0, 0]
     time = 0
@@ -384,9 +383,8 @@ def game_run():
                     if event.key == bike.right_key:
                         bike.turn(1)
                     elif event.key == bike.slow_key:
-                        slow_timer = 500
-                        bike.s_multiplier = .2
-
+                        bike.s_multiplier = 0.4
+                        duration_timer = 100
                     elif event.key == bike.left_key:
                         bike.turn(-1)
 
