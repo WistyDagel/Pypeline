@@ -111,6 +111,10 @@ def draw():
         pygame.draw.line(screen, GRID_FG, (0, grid_margin/2 + (i * (grid_cell_scl + grid_margin))),
                          (screen_width, grid_margin / 2 + (i * (grid_cell_scl + grid_margin))), grid_margin)
 
+    # bike glow
+    for bike in bikes:
+        bike.draw_glow(screen)
+
     # bike squares
     for bike in bikes:
         bike.draw(screen)
