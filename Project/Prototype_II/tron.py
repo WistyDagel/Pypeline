@@ -380,7 +380,9 @@ def game_run():
                     if event.key == bike.right_key:
                         bike.turn(1)
                     elif event.key == bike.slow_key:
-                        pressed_down = not pressed_down
+                        slow_timer = 500
+                        bike.s_multiplier = .2
+
                     elif event.key == bike.left_key:
                         bike.turn(-1)
 
@@ -393,6 +395,7 @@ def game_run():
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_SPACE:
                     paused = True
+                
 
             #Waits for user input to unpause the game
             while paused == True:
@@ -453,22 +456,31 @@ def game_run():
                         bike.alive = False
                     elif (powerup.type is pu.PowerUps.Type.PHASE):
                         bike.phase = True
+                        duration_timer = 500
 
                     powerups.remove(powerup)
                 
                 # Pressing the down key closes the window 
                 # Starts a timer allowing you to only slow down for a specific amount of time
-                if pressed_down:
-                    bike.s_multiplier = .6
-                    slow_timer = 500
-                slow_timer -= (1 if slow_timer > 0 else 0)
-                if slow_timer == 0:
-                    bike.s_multiplier = 1
+                
+                # slow_timer -= (1 if slow_timer > 0 else 0)
+
+                # if slow_timer == 0:
+                #     bike.s_multiplier = 1
+                # if pressed_down:
+                #     slow_timer = 500
+                #     bike.s_multiplier = .2
+
+                # slow_timer -= (1 if slow_timer > 0 else 0)
+
+                # if slow_timer == 0:
+                #     bike.s_multiplier = 1
 
         duration_timer -= (1 if duration_timer > 0 else 0)
         if duration_timer == 0:
             for x in range(len(bikes)):
                 bikes[x].s_multiplier = 1
+                bikes[x].phase = False
 
         # calling the draw method after all the positioning and checking is done
         draw()
