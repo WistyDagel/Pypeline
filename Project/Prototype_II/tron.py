@@ -73,7 +73,7 @@ GRID_FG = c.GRID_BLUE
 # initialize pygame module
 # def initialize():
 
-screen = pygame.display.set_mode([screen_width, screen_height])
+screen = pygame.display.set_mode([screen_width, screen_height], pygame.NOFRAME)
 
 pygame.display.set_caption('Prototype II')
 
@@ -285,7 +285,6 @@ def game_mode_menu():
         pygame.display.set_caption("Game Mode")
 
 # Chris notes
-# Tutorial Menu - that states the controls for each player 
 # Music for menu and game
 
 def tutorial_menu():
