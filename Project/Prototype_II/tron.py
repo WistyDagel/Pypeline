@@ -111,6 +111,10 @@ def draw():
         pygame.draw.line(screen, GRID_FG, (0, grid_margin/2 + (i * (grid_cell_scl + grid_margin))),
                          (screen_width, grid_margin / 2 + (i * (grid_cell_scl + grid_margin))), grid_margin)
 
+    # bike glow
+    for bike in bikes:
+        bike.draw_glow(screen)
+
     # bike squares
     for bike in bikes:
         bike.draw(screen)
@@ -412,13 +416,13 @@ def game_run():
             # make the bike check if it is 'dead' (see method declaration for more info)
             if bike.check_die(0,  (grid_cell_scl * 2), screen_width, screen_height):
                 for timerbike in timerbikes:
-                    if(bike.left_key == timerbike.left_key):
+                    if(bike.color == timerbike.color):
                         timerbike.alive = False
                 bikes.remove(bike)
 
             for other in bikes:
                 if bike is not other:
-                    if bike.phase is not True:
+                    if bike.phase is not True and bike.color is not other.color:
                         if bike.touches(other) & bike.alive:
                             other.kills += 1
                             bike.alive = False

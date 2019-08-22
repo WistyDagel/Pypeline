@@ -191,8 +191,8 @@ class Bike:
     def eff_spd(self):
         return self.SPD * self.s_multiplier
 
-    def draw(self, screen):
-        glow_width = 2
+    def draw_glow(self, screen):
+        glow_width = 1
         for piece in self.line_pieces:  
             glow = square.Square(
                 x = piece.x - glow_width,
@@ -201,6 +201,8 @@ class Bike:
                 h = piece.h + (glow_width * 2)
             )
             pygame.draw.rect(screen, color.WHITE, glow.to_rect())
+
+    def draw(self, screen):
         for piece in self.line_pieces:  
             pygame.draw.rect(screen, self.color, piece.to_rect())
 
