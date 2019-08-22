@@ -192,15 +192,16 @@ class Bike:
         return self.SPD * self.s_multiplier
 
     def draw_glow(self, screen):
-        glow_width = 1
-        for piece in self.line_pieces:  
-            glow = square.Square(
-                x = piece.x - glow_width,
-                y = piece.y - glow_width,
-                w = piece.w + (glow_width * 2),
-                h = piece.h + (glow_width * 2)
-            )
-            pygame.draw.rect(screen, color.WHITE, glow.to_rect())
+        if not self.phase:
+            glow_width = 1
+            for piece in self.line_pieces:  
+                glow = square.Square(
+                    x = piece.x - glow_width,
+                    y = piece.y - glow_width,
+                    w = piece.w + (glow_width * 2),
+                    h = piece.h + (glow_width * 2)
+                )
+                pygame.draw.rect(screen, color.WHITE, glow.to_rect())
 
     def draw(self, screen):
         for piece in self.line_pieces:  
