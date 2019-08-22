@@ -142,7 +142,7 @@ def generate_bikes(gamemode):
     global powerups
     if(gamemode == 1):
         bikes = [b.Bike(0, (grid_cell_scl * 2) + 2, b.Bike.Direction.RIGHT, c.PLAYER1, pygame.K_q, pygame.K_w, pygame.K_e), 
-                b.Bike(screen_width - b.Bike.WEIGHT, grid_cell_scl * 2, b.Bike.Direction.DOWN, c.PLAYER2, pygame.K_i, pygame.K_o, pygame.K_p)]     
+                b.Bike(screen_width - b.Bike.WEIGHT, screen_height - b.Bike.WEIGHT, b.Bike.Direction.LEFT, c.PLAYER4, pygame.K_i, pygame.K_o, pygame.K_p)]     
     if(gamemode == 2):
         bikes = [b.Bike(0, (grid_cell_scl * 2) + 2, b.Bike.Direction.RIGHT, c.PLAYER1, pygame.K_q, pygame.K_w, pygame.K_e), 
                 b.Bike(screen_width - b.Bike.WEIGHT, grid_cell_scl * 2, b.Bike.Direction.DOWN, c.PLAYER1, pygame.K_i, pygame.K_o, pygame.K_p),      
