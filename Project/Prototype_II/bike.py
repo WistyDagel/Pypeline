@@ -142,13 +142,6 @@ class Bike:
                 return True
         return False
 
-    # returns true if the bike is overlapping a given square at any point
-    # should be used to determine if a given bike should interact with a given powerup
-    # def use(self, powerup):
-    #     if self.get_bike().overlaps(powerup):
-    #         return True
-    #     return False
-
     # returns the last Square in line_pieces
     def get_bike(self):
         return self.line_pieces[-1]
@@ -198,7 +191,16 @@ class Bike:
         return self.SPD * self.s_multiplier
 
     def draw(self, screen):
-        for piece in self.line_pieces:
+        glow_width = 2
+        for piece in self.line_pieces:  
+            glow = square.Square(
+                x = piece.x - glow_width,
+                y = piece.y - glow_width,
+                w = piece.w + (glow_width * 2),
+                h = piece.h + (glow_width * 2)
+            )
+            pygame.draw.rect(screen, color.WHITE, glow.to_rect())
+        for piece in self.line_pieces:  
             pygame.draw.rect(screen, self.color, piece.to_rect())
 
     def overlaps(self, square):
