@@ -192,7 +192,7 @@ class Bike:
         return self.SPD * self.s_multiplier
 
     def draw(self, screen):
-        glow_width = 2
+        glow_width = 1
         for piece in self.line_pieces:  
             glow = square.Square(
                 x = piece.x - glow_width,

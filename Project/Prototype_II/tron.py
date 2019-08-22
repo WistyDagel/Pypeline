@@ -415,7 +415,7 @@ def game_run():
 
             for other in bikes:
                 if bike is not other:
-                    if bike.phase is not True:
+                    if bike.phase is not True and bike.color is not other.color:
                         if bike.touches(other) & bike.alive:
                             other.kills += 1
                             bike.alive = False
