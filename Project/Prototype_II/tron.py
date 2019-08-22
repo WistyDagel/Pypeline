@@ -111,6 +111,10 @@ def draw():
         pygame.draw.line(screen, GRID_FG, (0, grid_margin/2 + (i * (grid_cell_scl + grid_margin))),
                          (screen_width, grid_margin / 2 + (i * (grid_cell_scl + grid_margin))), grid_margin)
 
+    # bike glow
+    for bike in bikes:
+        bike.draw_glow(screen)
+
     # bike squares
     for bike in bikes:
         bike.draw(screen)
@@ -189,7 +193,7 @@ def main_menu():
                     selected = "quit"
                 if event.key == pygame.K_RETURN:
                     if selected == "start":
-                        game_mode_menu()                      
+                        game_mode_menu()
                     if selected == "quit":
                         exit()
 
@@ -415,7 +419,7 @@ def game_run():
 
             for other in bikes:
                 if bike is not other:
-                    if bike.phase is not True:
+                    if bike.phase is not True and bike.color is not other.color:
                         if bike.touches(other) & bike.alive:
                             other.kills += 1
                             bike.alive = False
