@@ -416,7 +416,7 @@ def game_run():
             # make the bike check if it is 'dead' (see method declaration for more info)
             if bike.check_die(0,  (grid_cell_scl * 2), screen_width, screen_height):
                 for timerbike in timerbikes:
-                    if(bike.color == timerbike.color):
+                    if(bike.left_key == timerbike.left_key):
                         timerbike.alive = False
                 bikes.remove(bike)
 
