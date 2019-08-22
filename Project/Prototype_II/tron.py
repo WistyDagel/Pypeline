@@ -68,12 +68,12 @@ bike_color = c.YELLOW
 powerup_color = c.RED
 
 GRID_BG = c.BLACK
-GRID_FG = (40, 140, 160)
+GRID_FG = c.GRID_BLUE
 
 # initialize pygame module
 # def initialize():
 
-screen = pygame.display.set_mode([screen_width, screen_height])
+screen = pygame.display.set_mode([screen_width, screen_height], pygame.NOFRAME)
 
 pygame.display.set_caption('Prototype II')
 
@@ -84,16 +84,17 @@ powerups = []
 
 #takes in the time, bikes and when they died and prints to the topbar
 def timer(time, timerbikes, finalTimes):
-    timerspot = 4
+    bikesleft = len(timerbikes)
+    posistion = 40 / (bikesleft + 1)
     for bike in timerbikes:
         if(bike.alive):
-            screen.blit(text_render(str(time), timer_font, 40, bike.color), (((8 * timerspot) * grid_cell_scl), 0))
-            timerspot -= 1
+            screen.blit(text_render(str(time), timer_font, 40, bike.color), (((posistion * bikesleft) * (grid_cell_scl + grid_margin)), 0))
+            bikesleft -= 1
         else:
-            if(finalTimes[timerspot - 1] == 0):
-                finalTimes[timerspot - 1] = time
-            screen.blit(text_render(str(finalTimes[timerspot - 1]), timer_font, 40, bike.color), (((8 * timerspot) * grid_cell_scl), 0))
-            timerspot -= 1
+            if(finalTimes[bikesleft - 1] == 0):
+                finalTimes[bikesleft - 1] = time
+            screen.blit(text_render(str(finalTimes[bikesleft - 1]), timer_font, 40, bike.color), (((posistion * bikesleft) * (grid_cell_scl + grid_margin)), 0))
+            bikesleft -= 1
 
 # draw the background, grid, and squares
 def draw():
@@ -136,25 +137,23 @@ def generate_bikes(gamemode):
     global bikes
     global powerups
     if(gamemode == 1):
-        bikes = [b.Bike(0, (grid_cell_scl * 2) + 2, b.Bike.Direction.RIGHT, c.PURPLE, pygame.K_q, pygame.K_w, pygame.K_e), 
-                b.Bike(screen_width - b.Bike.WEIGHT, screen_height - b.Bike.WEIGHT, b.Bike.Direction.LEFT, c.YELLOW, pygame.K_LEFT, pygame.K_DOWN, pygame.K_RIGHT),
-                b.Bike(0, screen_height - b.Bike.WEIGHT, b.Bike.Direction.UP, c.BLUE, pygame.K_z, pygame.K_x, pygame.K_c),
-                b.Bike(screen_width - b.Bike.WEIGHT, grid_cell_scl * 2, b.Bike.Direction.DOWN, c.GREEN, pygame.K_i, pygame.K_o, pygame.K_p)]      
+        bikes = [b.Bike(0, (grid_cell_scl * 2) + 2, b.Bike.Direction.RIGHT, c.PLAYER1, pygame.K_q, pygame.K_w, pygame.K_e), 
+                b.Bike(screen_width - b.Bike.WEIGHT, grid_cell_scl * 2, b.Bike.Direction.DOWN, c.PLAYER2, pygame.K_i, pygame.K_o, pygame.K_p)]     
     if(gamemode == 2):
-        bikes = [b.Bike(0, (grid_cell_scl * 2) + 2, b.Bike.Direction.RIGHT, c.PURPLE, pygame.K_q, pygame.K_w, pygame.K_e), 
-                b.Bike(screen_width - b.Bike.WEIGHT, screen_height - b.Bike.WEIGHT, b.Bike.Direction.LEFT, c.YELLOW, pygame.K_LEFT, pygame.K_DOWN, pygame.K_RIGHT),
-                b.Bike(0, screen_height - b.Bike.WEIGHT, b.Bike.Direction.UP, c.BLUE, pygame.K_z, pygame.K_x, pygame.K_c),
-                b.Bike(screen_width - b.Bike.WEIGHT, grid_cell_scl * 2, b.Bike.Direction.DOWN, c.GREEN, pygame.K_i, pygame.K_o, pygame.K_p)]      
+        bikes = [b.Bike(0, (grid_cell_scl * 2) + 2, b.Bike.Direction.RIGHT, c.PLAYER1, pygame.K_q, pygame.K_w, pygame.K_e), 
+                b.Bike(screen_width - b.Bike.WEIGHT, grid_cell_scl * 2, b.Bike.Direction.DOWN, c.PLAYER1, pygame.K_i, pygame.K_o, pygame.K_p),      
+                b.Bike(0, screen_height - b.Bike.WEIGHT, b.Bike.Direction.UP, c.PLAYER4, pygame.K_z, pygame.K_x, pygame.K_c),
+                b.Bike(screen_width - b.Bike.WEIGHT, screen_height - b.Bike.WEIGHT, b.Bike.Direction.LEFT, c.PLAYER4, pygame.K_LEFT, pygame.K_DOWN, pygame.K_RIGHT)]     
     if(gamemode == 3):
-        bikes = [b.Bike(0, (grid_cell_scl * 2) + 2, b.Bike.Direction.RIGHT, c.PURPLE, pygame.K_q, pygame.K_w, pygame.K_e), 
-                b.Bike(screen_width - b.Bike.WEIGHT, screen_height - b.Bike.WEIGHT, b.Bike.Direction.LEFT, c.YELLOW, pygame.K_LEFT, pygame.K_DOWN, pygame.K_RIGHT),
-                b.Bike(0, screen_height - b.Bike.WEIGHT, b.Bike.Direction.UP, c.BLUE, pygame.K_z, pygame.K_x, pygame.K_c),
-                b.Bike(screen_width - b.Bike.WEIGHT, grid_cell_scl * 2, b.Bike.Direction.DOWN, c.GREEN, pygame.K_i, pygame.K_o, pygame.K_p)]      
+        bikes = [b.Bike(0, (grid_cell_scl * 2) + 2, b.Bike.Direction.RIGHT, c.PLAYER1, pygame.K_q, pygame.K_w, pygame.K_e), 
+                b.Bike(screen_width - b.Bike.WEIGHT, grid_cell_scl * 2, b.Bike.Direction.DOWN, c.PLAYER1, pygame.K_i, pygame.K_o, pygame.K_p),      
+                b.Bike(0, screen_height - b.Bike.WEIGHT, b.Bike.Direction.UP, c.PLAYER1, pygame.K_z, pygame.K_x, pygame.K_c),
+                b.Bike(screen_width - b.Bike.WEIGHT, screen_height - b.Bike.WEIGHT, b.Bike.Direction.LEFT, c.PLAYER4, pygame.K_LEFT, pygame.K_DOWN, pygame.K_RIGHT)]      
     if(gamemode == 4):
-        bikes = [b.Bike(0, (grid_cell_scl * 2) + 2, b.Bike.Direction.RIGHT, c.PURPLE, pygame.K_q, pygame.K_w, pygame.K_e), 
-                b.Bike(screen_width - b.Bike.WEIGHT, screen_height - b.Bike.WEIGHT, b.Bike.Direction.LEFT, c.YELLOW, pygame.K_LEFT, pygame.K_DOWN, pygame.K_RIGHT),
-                b.Bike(0, screen_height - b.Bike.WEIGHT, b.Bike.Direction.UP, c.BLUE, pygame.K_z, pygame.K_x, pygame.K_c),
-                b.Bike(screen_width - b.Bike.WEIGHT, grid_cell_scl * 2, b.Bike.Direction.DOWN, c.GREEN, pygame.K_i, pygame.K_o, pygame.K_p)]      
+        bikes = [b.Bike(0, (grid_cell_scl * 2) + 2, b.Bike.Direction.RIGHT, c.PLAYER1, pygame.K_q, pygame.K_w, pygame.K_e), 
+                b.Bike(screen_width - b.Bike.WEIGHT, grid_cell_scl * 2, b.Bike.Direction.DOWN, c.PLAYER2, pygame.K_i, pygame.K_o, pygame.K_p),      
+                b.Bike(0, screen_height - b.Bike.WEIGHT, b.Bike.Direction.UP, c.PLAYER3, pygame.K_z, pygame.K_x, pygame.K_c),
+                b.Bike(screen_width - b.Bike.WEIGHT, screen_height - b.Bike.WEIGHT, b.Bike.Direction.LEFT, c.PLAYER4, pygame.K_LEFT, pygame.K_DOWN, pygame.K_RIGHT)]
     
     powerups.clear()
 
@@ -211,8 +210,8 @@ def main_menu():
     
         # Main Menu Text
         screen.blit(title, (screen_width/2 - (title_rect[2]/2), 80))
-        screen.blit(start_text, (screen_width/2 - (start_rect[2]/2), 300))
-        screen.blit(quit_text, (screen_width/2 - (quit_rect[2]/2), 380))
+        screen.blit(start_text, (screen_width/2 - (start_rect[2]/2), 400))
+        screen.blit(quit_text, (screen_width/2 - (quit_rect[2]/2), 480))
         pygame.display.update()
         clock.tick(FPS)
         pygame.display.set_caption("Main Menu")
@@ -238,28 +237,31 @@ def game_mode_menu():
                 if event.key == pygame.K_RETURN:
                     if selected == "1 V 1":
                         generate_bikes(1)
-                        game_run()
+                        tutorial_menu()
                     if selected == "2 V 2":
                         generate_bikes(2)
+                        tutorial_menu()
                     if selected == "3 V 1":
                         generate_bikes(3)
+                        tutorial_menu()
                     if selected == "Free For All":
-                        generate_bikes(4)                        
+                        generate_bikes(4)
+                        tutorial_menu()
 
         screen.fill(BLACK)
         title = text_render("Game Modes", font, 75, GRID_FG)
         if selected == "1 V 1":
-            one_text = text_render("> 1 V 1 <", arcade_font, 30, YELLOW)
+            one_text = text_render("> 1 V 1 <", arcade_font, 28, YELLOW)
         else:
-            one_text = text_render("1 V 1", arcade_font, 30, WHITE)
+            one_text = text_render("1 V 1", arcade_font, 28, WHITE)
         if selected == "2 V 2":
-            two_text = text_render("> 2 V 2 <", arcade_font, 30, YELLOW)
+            two_text = text_render("> 2 V 2 <", arcade_font, 28, YELLOW)
         else:
-            two_text = text_render("2 V 2", arcade_font, 30, WHITE)
+            two_text = text_render("2 V 2", arcade_font, 28, WHITE)
         if selected == "3 V 1":
-            three_text = text_render("> 3 V 1 <", arcade_font, 30, YELLOW)
+            three_text = text_render("> 3 V 1 <", arcade_font, 28, YELLOW)
         else:
-            three_text = text_render(" 3 V 1 ", arcade_font, 30, WHITE)
+            three_text = text_render(" 3 V 1 ", arcade_font, 28, WHITE)
         if selected == "Free For All":
             free_text = text_render("> Free For All <", arcade_font, 24, YELLOW)
         else:
@@ -267,28 +269,81 @@ def game_mode_menu():
     
         title_rect = title.get_rect()
         one_rect = one_text.get_rect()
+        two_rect = two_text.get_rect()
         three_rect = three_text.get_rect()
+        free_rect = free_text.get_rect()
     
         # Main Menu Text
         screen.blit(title, (screen_width/2 - (title_rect[2]/2), 80))
         screen.blit(one_text, (screen_width/2 - (one_rect[2]/2), 300))
-        screen.blit(two_text, (625, 400))
-        screen.blit(three_text, (50, 410))  
-        screen.blit(free_text, (260, 525))
+        screen.blit(two_text, (screen_width/2 - (two_rect[2]/2)+200, 400))
+        screen.blit(three_text, (screen_width/2 - (three_rect[2]/2)-200, 400))  
+        screen.blit(free_text, (screen_width/2 - (free_rect[2]/2), 525))
 
         pygame.display.update()
         clock.tick(FPS)
         pygame.display.set_caption("Game Mode")
 
 # Chris notes
-# Tutorial Menu - that states the controls for each player 
 # Music for menu and game
+
+def tutorial_menu():
+    global mode_menu
+    while mode_menu:
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+                if event.type == pygame.QUIT:
+                    mode_menu = False
+                    pygame.quit()
+                    exit()
+                if event.key == pygame.K_RETURN:
+                    game_run()
+
+        screen.fill(BLACK)
+        title = text_render("Controls", font, 75, GRID_FG)
+        player1_text = text_render("Player 1: Q - Turn Left | W - Slow Bike | E - Turn right", arcade_font, 12, bikes[0].color)
+        player2_text = text_render("Player 2: I - Turn Left | O - Slow Bike | P - Turn right", arcade_font, 12, bikes[1].color)
+        continue_text = text_render("Press Enter/Return to start game...", arcade_font, 15, GRID_FG)
+        title_rect = title.get_rect()
+        player1_rect = player1_text.get_rect()
+        player2_rect = player2_text.get_rect()
+        continue_rect = continue_text.get_rect()
+
+        if len(bikes) > 2: 
+            position1 = 200 
+        else: 
+            position1 = 300
+
+        if len(bikes) > 2: 
+            position2 = 300 
+        else: 
+            position2 = 400
+
+        # Main Menu Text
+        screen.blit(title, (screen_width/2 - (title_rect[2]/2), 20))
+        screen.blit(player1_text, (screen_width/2 - (player1_rect[2]/2), position1))
+        screen.blit(player2_text, (screen_width/2 - (player2_rect[2]/2), position2))
+        screen.blit(continue_text, (screen_width/2 - (continue_rect[2]/2), 600))
+
+
+        #Checks to see if the player count is 4
+        if len(bikes) > 2:
+            player3_text = text_render("Player 3: Z - Turn Left | X - Slow Bike | C - Turn right", arcade_font, 12, bikes[2].color)
+            player4_text = text_render("Player 4: L Arrow - Turn Left | D Arrow - Slow Bike | R Arrow - Turn Right", arcade_font, 11, bikes[3].color)
+            player3_rect = player3_text.get_rect()
+            player4_rect = player4_text.get_rect()
+            screen.blit(player3_text, (screen_width/2 - (player3_rect[2]/2), 400))  
+            screen.blit(player4_text, (screen_width/2 - (player4_rect[2]/2), 500))
+    
+        pygame.display.update()
+        clock.tick(FPS)
+        pygame.display.set_caption("Game Mode")
+
 
 def game_run():
     # run while not done
     done = False
     mode_menu = False
-
 
     pressed_down = False
 
@@ -296,10 +351,12 @@ def game_run():
     global current_spd
     global duration_timer
     global paused
+    global slow_timer
     
     global time
     global finalTimes
     global timerbikes
+    global slow_timer
     timerbikes = bikes.copy()       
     finalTimes = [0, 0, 0, 0]
     time = 0
@@ -323,13 +380,9 @@ def game_run():
                     if event.key == bike.right_key:
                         bike.turn(1)
                     elif event.key == bike.slow_key:
-                        bike.cut()
+                        pressed_down = not pressed_down
                     elif event.key == bike.left_key:
                         bike.turn(-1)
-
-                    # # press down to slow the bike
-                    # if event.key == pygame.K_DOWN:
-                    #     pressed_down = True
 
                 # pressing esc also closes the window
                 if event.key == pygame.K_ESCAPE:
@@ -347,19 +400,7 @@ def game_run():
                     if event.type == KEYUP:
                         if event.key == pygame.K_SPACE:
                             paused = False
-            # elif event.type == pygame.KEYUP:
-            #     if event.key == pygame.K_DOWN:
-            #         pressed_down = False
-            #         bike.s_multiplier = 1
 
-        # Pressing the down key closes the window 
-        # Starts a timer allowing you to only slow down for a specific amount of time
-        # if pressed_down:
-        #     bike.s_multiplier = .6
-        #     slow_timer = 500
-        # slow_timer -= (1 if slow_timer > 0 else 0)
-        # if slow_timer == 0:
-        #     bike.v_multiplier = 1
 
         # advance the bike in the direction it is goings
         for bike in bikes:
@@ -368,14 +409,15 @@ def game_run():
             # make the bike check if it is 'dead' (see method declaration for more info)
             if bike.check_die(0,  (grid_cell_scl * 2), screen_width, screen_height):
                 for timerbike in timerbikes:
-                    if(bike.color == timerbike.color):
+                    if(bike.left_key == timerbike.left_key):
                         timerbike.alive = False
                 bikes.remove(bike)
 
             for other in bikes:
                 if bike is not other:
                     if bike.phase is not True:
-                        if bike.touches(other):
+                        if bike.touches(other) & bike.alive:
+                            other.kills += 1
                             bike.alive = False
 
                     
@@ -413,6 +455,16 @@ def game_run():
                         bike.phase = True
 
                     powerups.remove(powerup)
+                
+                # Pressing the down key closes the window 
+                # Starts a timer allowing you to only slow down for a specific amount of time
+                if pressed_down:
+                    bike.s_multiplier = .6
+                    slow_timer = 500
+                slow_timer -= (1 if slow_timer > 0 else 0)
+                if slow_timer == 0:
+                    bike.s_multiplier = 1
+
         duration_timer -= (1 if duration_timer > 0 else 0)
         if duration_timer == 0:
             for x in range(len(bikes)):
