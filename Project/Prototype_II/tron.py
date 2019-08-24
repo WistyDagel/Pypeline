@@ -223,6 +223,8 @@ def main_menu():
 def game_mode_menu():
     selected = "1 V 1"
     global mode_menu
+    #Esc key brings you back to main menu - Chris work on
+    
     while mode_menu:
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
