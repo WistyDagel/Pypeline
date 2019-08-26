@@ -279,7 +279,7 @@ def main_menu():
 
 def game_mode_menu():
     selected = "1 V 1"
-    global inTeams;
+    global inTeams
     global mode_menu
     #Esc key brings you back to main menu - Chris work on
 
