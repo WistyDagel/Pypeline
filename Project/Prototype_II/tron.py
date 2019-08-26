@@ -135,6 +135,10 @@ def draw(endState, inTeams):
         pygame.draw.line(screen, GRID_FG, (0, grid_margin/2 + (i * (grid_cell_scl + grid_margin))),
                          (screen_width, grid_margin / 2 + (i * (grid_cell_scl + grid_margin))), grid_margin)
 
+    # bike glow
+    for bike in bikes:
+        bike.draw_glow(screen)
+
     # bike squares
     for bike in bikes:
         bike.draw(screen)
@@ -183,7 +187,7 @@ def generate_bikes(gamemode):
     global powerups
     if(gamemode == 1):
         bikes = [b.Bike(0, (grid_cell_scl * 2) + 2, b.Bike.Direction.RIGHT, c.PLAYER1, pygame.K_q, pygame.K_w, pygame.K_e), 
-                b.Bike(screen_width - b.Bike.WEIGHT, grid_cell_scl * 2, b.Bike.Direction.DOWN, c.PLAYER2, pygame.K_i, pygame.K_o, pygame.K_p)]     
+                b.Bike(screen_width - b.Bike.WEIGHT, screen_height - b.Bike.WEIGHT, b.Bike.Direction.LEFT, c.PLAYER4, pygame.K_i, pygame.K_o, pygame.K_p)]     
     if(gamemode == 2):
         bikes = [b.Bike(0, (grid_cell_scl * 2) + 2, b.Bike.Direction.RIGHT, c.PLAYER1, pygame.K_q, pygame.K_w, pygame.K_e), 
                 b.Bike(screen_width - b.Bike.WEIGHT, grid_cell_scl * 2, b.Bike.Direction.DOWN, c.PLAYER1, pygame.K_i, pygame.K_o, pygame.K_p),      
@@ -234,7 +238,7 @@ def main_menu():
                     selected = "quit"
                 if event.key == pygame.K_RETURN:
                     if selected == "start":
-                        game_mode_menu()                      
+                        game_mode_menu()
                     if selected == "quit":
                         exit()
 
@@ -265,6 +269,8 @@ def game_mode_menu():
     selected = "1 V 1"
     global inTeams;
     global mode_menu
+    #Esc key brings you back to main menu - Chris work on
+    
     while mode_menu:
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
@@ -584,7 +590,6 @@ def game_run():
     global time
     global finalTimes
     global timerbikes
-    global slow_timer
     timerbikes = bikes.copy()       
     finalTimes = [0, 0, 0, 0]
     time = 0
@@ -608,7 +613,8 @@ def game_run():
                     if event.key == bike.right_key:
                         bike.turn(1)
                     elif event.key == bike.slow_key:
-                        pressed_down = not pressed_down
+                        bike.s_multiplier = 0.4
+                        duration_timer = 100
                     elif event.key == bike.left_key:
                         bike.turn(-1)
 
@@ -621,6 +627,7 @@ def game_run():
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_SPACE:
                     paused = True
+                
 
             #Waits for user input to unpause the game
             while paused == True:
@@ -643,7 +650,7 @@ def game_run():
 
             for other in bikes:
                 if bike is not other:
-                    if bike.phase is not True:
+                    if bike.phase is not True and bike.color is not other.color:
                         if bike.touches(other) & bike.alive:
                             bike.alive = False
                             for bike in timerbikes:
@@ -683,22 +690,31 @@ def game_run():
                         bike.alive = False
                     elif (powerup.type is pu.PowerUps.Type.PHASE):
                         bike.phase = True
+                        duration_timer = 500
 
                     powerups.remove(powerup)
                 
                 # Pressing the down key closes the window 
                 # Starts a timer allowing you to only slow down for a specific amount of time
-                if pressed_down:
-                    bike.s_multiplier = .6
-                    slow_timer = 500
-                slow_timer -= (1 if slow_timer > 0 else 0)
-                if slow_timer == 0:
-                    bike.s_multiplier = 1
+                
+                # slow_timer -= (1 if slow_timer > 0 else 0)
+
+                # if slow_timer == 0:
+                #     bike.s_multiplier = 1
+                # if pressed_down:
+                #     slow_timer = 500
+                #     bike.s_multiplier = .2
+
+                # slow_timer -= (1 if slow_timer > 0 else 0)
+
+                # if slow_timer == 0:
+                #     bike.s_multiplier = 1
 
         duration_timer -= (1 if duration_timer > 0 else 0)
         if duration_timer == 0:
             for x in range(len(bikes)):
                 bikes[x].s_multiplier = 1
+                bikes[x].phase = False
 
         # calling the draw method after all the positioning and checking is done
         draw(endState, inTeams)
