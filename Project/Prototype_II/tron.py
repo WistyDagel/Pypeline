@@ -3,6 +3,7 @@ import bike as b
 import square as s
 import color as c
 import powerUps as pu
+import json
 
 import pygame
 import math
@@ -62,6 +63,7 @@ paused = False # Boolean for when the game is paused or not
 game_modes = {"1 V 1" : 2, "2 V 2" : 4, "3 V 1" : 4, "Free For All" : 4} # Dictionary for game modes
 menu=True #Menu boolean that is set whenever the user is on the main menu
 mode_menu=True #Mode menu boolean that is set whenever the user is on the game mode menu
+leaderboard=True #leaderboard menu
 
 # decide on colors
 bike_color = c.YELLOW
@@ -86,6 +88,28 @@ pygame.time.set_timer(USEREVENT+1, 1000)
 
 powerups = []
 
+def save_data(highscores, names, file):
+    data = {}
+    data['leaderboard'] = []
+    data['leaderboard'].append({
+        'names': names,
+        'highscores': highscores
+            
+    })
+
+    with open(file, 'w') as outfile:
+        json.dump(data, outfile)
+
+def load_data(file):
+    with open(file) as json_file:
+        data = json.load(json_file)
+        global names
+        global highscores
+        for p in data['leaderboard']:
+            names = p['names']
+            highscores = p['highscores']
+
+
 #takes in the time, bikes and when they died and prints to the topbar
 def timer(time, timerbikes, finalTimes):
     bikesleft = len(timerbikes)
@@ -101,7 +125,7 @@ def timer(time, timerbikes, finalTimes):
             bikesleft -= 1
 
 # draw the background, grid, and squares
-def draw():
+def draw(endState, inTeams):
     # erase everything
     screen.fill(GRID_BG)
 
@@ -137,6 +161,27 @@ def draw():
     screen.fill(GRAY, (0, 0, grid_cell_scl * (grid_width + 2), grid_cell_scl * 2 + 2)) 
     timer(time, timerbikes, finalTimes)
 
+    if(endState):
+        screen.fill(GRAY, (screen_width/6, screen_height/3, 2*screen_width/3, screen_height/3))
+        if(inTeams == 2 or inTeams == 3):
+            if(timerbikes[0].color == bikes[0].color):
+                winner_text = text_render("Team 1 Wins", arcade_font, 40, bikes[0].color)
+            else:
+                winner_text = text_render("Team 2 Wins", arcade_font, 40, bikes[0].color)
+        else:
+            if(timerbikes[0].left_key == bikes[0].left_key):
+                winner_text = text_render("Player 1 Wins", arcade_font, 40, bikes[0].color)
+            elif(timerbikes[1].left_key == bikes[0].left_key):
+                winner_text = text_render("Player 2 Wins", arcade_font, 40, bikes[0].color)
+            elif(timerbikes[2].left_key == bikes[0].left_key):
+                winner_text = text_render("Player 3 Wins", arcade_font, 40, bikes[0].color)
+            elif(timerbikes[3].left_key == bikes[0].left_key):
+                winner_text = text_render("Player 4 Wins", arcade_font, 40, bikes[0].color)
+        continue_text = text_render("Press Enter/Return to continue", arcade_font, 15, GRID_FG)
+        winner_rect = winner_text.get_rect()
+        continue_rect = continue_text.get_rect()
+        screen.blit(winner_text, (screen_width/2 - (winner_rect[2]/2), 3*screen_height/7))
+        screen.blit(continue_text, (screen_width/2 - (continue_rect[2]/2), 3*screen_height/5))
     # flip the screen (? not sure why needed ?)
     pygame.display.flip()
 
@@ -226,6 +271,7 @@ def main_menu():
 
 def game_mode_menu():
     selected = "1 V 1"
+    global inTeams;
     global mode_menu
     #Esc key brings you back to main menu - Chris work on
 
@@ -247,15 +293,19 @@ def game_mode_menu():
                 if event.key == pygame.K_RETURN:
                     if selected == "1 V 1":
                         generate_bikes(1)
+                        inTeams = 1
                         tutorial_menu()
                     if selected == "2 V 2":
                         generate_bikes(2)
+                        inTeams = 2
                         tutorial_menu()
                     if selected == "3 V 1":
                         generate_bikes(3)
+                        inTeams = 3
                         tutorial_menu()
                     if selected == "Free For All":
                         generate_bikes(4)
+                        inTeams = 4
                         tutorial_menu()
 
         screen.fill(BLACK)
@@ -336,6 +386,7 @@ def tutorial_menu():
         screen.blit(continue_text, (screen_width/2 - (continue_rect[2]/2), 600))
 
 
+
         #Checks to see if the player count is 4
         if len(bikes) > 2:
             player3_text = text_render("Player 3: Z - Turn Left | X - Slow Bike | C - Turn right", arcade_font, 12, bikes[2].color)
@@ -349,6 +400,171 @@ def tutorial_menu():
         clock.tick(FPS)
         pygame.display.set_caption("Game Mode")
 
+def Leader_Board(teams, winnerposition, file):
+    global leaderboard
+    global namenotassigned
+    namenotassigned = True
+    while leaderboard:
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+                if event.type == pygame.QUIT:
+                    leaderboard = False
+                    pygame.quit()
+                    exit()
+                if event.key == pygame.K_RETURN:
+                    names.pop()
+                    highscores.pop()
+                    save_data(highscores, names, file)
+                    main_menu()
+
+        screen.fill(BLACK)
+        title = text_render("LeaderBoard", arcade_font, 50, GRID_FG)
+        title_rect = title.get_rect()
+        screen.blit(title, (screen_width/2 - (title_rect[2]/2), screen_height/60))
+        if(teams == 1):
+            subtitle = text_render("1 V 1", arcade_font, 40, GRID_FG)
+            subtitle_rect = subtitle.get_rect()
+            screen.blit(subtitle, (screen_width/2 - (subtitle_rect[2]/2), (title_rect[2]/9)))
+        elif(teams == 2):
+            subtitle = text_render("2 V 2", arcade_font, 40, GRID_FG)
+            subtitle_rect = subtitle.get_rect()
+            screen.blit(subtitle, (screen_width/2 - (subtitle_rect[2]/2), (title_rect[2]/9)))
+        elif(teams == 3):
+            subtitle = text_render("3 V 1", arcade_font, 40, GRID_FG)
+            subtitle_rect = subtitle.get_rect()
+            screen.blit(subtitle, (screen_width/2 - (subtitle_rect[2]/2), (title_rect[2]/9)))
+        elif(teams == 4):
+            subtitle = text_render("Free For All", arcade_font, 40, GRID_FG)
+            subtitle_rect = subtitle.get_rect()
+            screen.blit(subtitle, (screen_width/2 - (subtitle_rect[2]/2), (title_rect[2]/9)))
+        
+        highscoreLines = []
+        highscore_rect = title.get_rect()
+        if(len(names) < 11):
+            names.insert(winnerposition, "AAA")
+        if(len(names) > 11):
+            names.pop()
+        for x in range(10):
+            if(x != 9):
+                highscoreLines.append(str(x + 1) + ": " + names[x] + "     " + highscores[x])
+            else:
+                highscoreLines.append(str(x + 1) + ": " + names[x] + "     " + highscores[x] + " ")
+
+        for x in range(len(highscoreLines)):
+            highscore = text_render(highscoreLines[x], arcade_font, 20, GRID_FG)
+            highscore_rect = highscore.get_rect()
+            screen.blit(highscore, (screen_width/2 - (highscore_rect[2]/2), (title_rect[2]/9) + (subtitle_rect[3]) + (highscore_rect[3] * x)))
+
+        letter = ''
+        settingNameText = ">A< AA"
+        while(namenotassigned):
+            if(winnerposition != 10):
+                screen.fill(BLACK, (0, 3*screen_height/4, screen_width, screen_height))
+                screen.blit(text_render(">", arcade_font, 20, GRID_FG), (screen_width/2 - (highscore_rect[2]/2) - 25,
+                                                                (title_rect[2]/9) + (subtitle_rect[3]) + (highscore_rect[3] * winnerposition)))
+                settingName = text_render(settingNameText, arcade_font, 40, GRID_FG)
+                settingName_rect = settingName.get_rect()
+                screen.blit(settingName, (screen_width/2 - (settingName_rect[2]/2), (8*screen_height/10)))
+                toNextLetter = text_render("Hit enter to lock in the letter", arcade_font, 15, GRID_FG)
+                toNextLetter_rect = toNextLetter.get_rect()
+                screen.blit(toNextLetter, (screen_width/2 - (toNextLetter_rect[2]/2), 9*screen_height/10))
+                for event in pygame.event.get():
+                    if event.type == pygame.KEYDOWN:
+                        if event.type == pygame.QUIT:
+                            pygame.quit()
+                            exit()
+                        if event.key == pygame.K_UP:
+                            if(settingNameText.index(">") == 0):
+                                letter = settingNameText[1]
+                                if(letter == "Z"):
+                                    settingNameText = settingNameText.replace(">Z", ">A")
+
+                                else:
+                                    letter = chr(ord(letter) + 1)
+                                    settingNameText = settingNameText.replace(">" + chr(ord(letter) - 1), ">" + letter)
+
+                            elif(settingNameText.index(">") == 2):
+                                letter = settingNameText[3]
+                                if(letter == "Z"):
+                                    settingNameText = settingNameText.replace(">Z", ">A")
+
+                                else:
+                                    letter = chr(ord(letter) + 1)
+                                    settingNameText = settingNameText.replace(">" + chr(ord(letter) - 1), ">" + letter)
+
+                            elif(settingNameText.index(">") == 3):
+                                letter = settingNameText[4]
+                                if(letter == "Z"):
+                                    settingNameText = settingNameText.replace(">Z", ">A")
+
+                                else:
+                                    letter = chr(ord(letter) + 1)
+                                    settingNameText = settingNameText.replace(">" + chr(ord(letter) - 1), ">" + letter)
+
+                        elif event.key == pygame.K_DOWN:
+                            if(settingNameText.index(">") == 0):
+                                letter = settingNameText[1]
+                                if(letter == "A"):
+                                    settingNameText = settingNameText.replace(">A", ">Z")
+
+                                else:
+                                    letter = chr(ord(letter) - 1)
+                                    settingNameText = settingNameText.replace(">" + chr(ord(letter) + 1), ">" + letter)
+
+                            elif(settingNameText.index(">") == 2):
+                                letter = settingNameText[3]
+                                if(letter == "A"):
+                                    settingNameText = settingNameText.replace(">A", ">Z")
+
+                                else:
+                                    letter = chr(ord(letter) - 1)
+                                    settingNameText = settingNameText.replace(">" + chr(ord(letter) + 1), ">" + letter)
+
+                            elif(settingNameText.index(">") == 3):
+                                letter = settingNameText[4]
+                                if(letter == "A"):
+                                    settingNameText = settingNameText.replace(">A", ">Z")
+
+                                else:
+                                    letter = chr(ord(letter) - 1)
+                                    settingNameText = settingNameText.replace(">" + chr(ord(letter) + 1), ">" + letter)
+            
+                        if event.key == pygame.K_RETURN:
+                            if(settingNameText.index(">") == 0):
+                                settingNameText = settingNameText.replace(">" + settingNameText[1] + "< A", settingNameText[1] +" >A< ", 1)
+
+                            elif(settingNameText.index(">") == 2):
+                                settingNameText = settingNameText.replace(" >" + settingNameText[3] + "< A", settingNameText[3] +" >A<", 1)
+
+                            else:
+                                names[winnerposition] = settingNameText[0] + settingNameText[1] + settingNameText[4]
+                                namenotassigned = False;
+            else:
+                namenotassigned = False;
+            screen.fill(BLACK, (0, 3*screen_height/4, screen_width, screen_height))
+            screen.blit(text_render(">", arcade_font, 20, GRID_FG), (screen_width/2 - (highscore_rect[2]/2) - 25,
+                                                            (title_rect[2]/9) + (subtitle_rect[3]) + (highscore_rect[3] * winnerposition)))
+            settingName = text_render(settingNameText, arcade_font, 40, GRID_FG)
+            settingName_rect = settingName.get_rect()
+            screen.blit(settingName, (screen_width/2 - (settingName_rect[2]/2), (8*screen_height/10)))
+            toNextLetter = text_render("Hit enter to lock in the letter", arcade_font, 15, GRID_FG)
+            toNextLetter_rect = toNextLetter.get_rect()
+            screen.blit(toNextLetter, (screen_width/2 - (toNextLetter_rect[2]/2), 9*screen_height/10))
+
+            pygame.display.update()
+            clock.tick(FPS)
+            pygame.display.set_caption("LeaderBoard")
+
+        settingName = text_render("Your Score: " + highscores[winnerposition], arcade_font, 35, GRID_FG)
+        settingName_rect = settingName.get_rect()
+        screen.blit(settingName, (screen_width/2 - (settingName_rect[2]/2), 8*screen_height/10))
+        toMainMenu = text_render("Hit enter to go to the Main Menu", arcade_font, 15, GRID_FG)
+        toMainMenu_rect = toMainMenu.get_rect()
+        screen.blit(toMainMenu, (screen_width/2 - (toMainMenu_rect[2]/2), 9*screen_height/10))
+
+        pygame.display.update()
+        clock.tick(FPS)
+        pygame.display.set_caption("LeaderBoard")
 
 def game_run():
     # run while not done
@@ -362,7 +578,19 @@ def game_run():
     global duration_timer
     global paused
     global slow_timer
-    
+    global endState
+    endState = False
+    global file
+    if(inTeams == 1):
+        file = "1v1_leaderboard.txt"
+    elif(inTeams == 2):
+        file = "2v2_leaderboard.txt"
+    elif(inTeams == 3):
+        file = "3v1_leaderboard.txt"
+    elif(inTeams == 4):
+        file = "FFA_leaderboard.txt"
+    global highscorezeros
+    highscorezeros = ""
     global time
     global finalTimes
     global timerbikes
@@ -428,8 +656,10 @@ def game_run():
                 if bike is not other:
                     if bike.phase is not True and bike.color is not other.color:
                         if bike.touches(other) & bike.alive:
-                            other.kills += 1
                             bike.alive = False
+                            for bike in timerbikes:
+                                if(bike.left_key == other.left_key):
+                                    bike.kills += 1
 
                     
         delay = 10  # every x seconds, create a powerup
@@ -491,10 +721,99 @@ def game_run():
                 bikes[x].phase = False
 
         # calling the draw method after all the positioning and checking is done
-        draw()
+        draw(endState, inTeams)
 
         # Pause the clock for a frame
         clock.tick(current_spd)
+
+        #check for win
+        if(len(bikes) < 4):
+            endState = False
+            if(len(bikes) == 1):
+                endState = True
+            elif(len(bikes) == 2):
+                if(bikes[0].color == bikes[1].color):
+                    endState = True
+            elif(len(bikes) == 3):
+                if(bikes[0].color == bikes[1].color and bikes[1].color == bikes[2].color):
+                    endState = True
+        if(endState):        
+            draw(endState, inTeams)
+            winnerhighscore = 0
+            killmult = 1
+            load_data(file)
+            place = 0
+
+            if(inTeams == 2 or inTeams == 3):
+                if(timerbikes[0].color == bikes[0].color):
+                    if(inTeams == 2):
+                        winnerhighscore += finalTimes[0]
+                        winnerhighscore += finalTimes[1]
+                        killmult += timerbikes[0].kills
+                        killmult += timerbikes[1].kills
+                        winnerhighscore *= killmult
+                        winnerhighscore *= 10
+                    else:
+                        winnerhighscore += finalTimes[0]
+                        winnerhighscore += finalTimes[1]
+                        winnerhighscore += finalTimes[2]
+                        killmult += timerbikes[0].kills
+                        killmult += timerbikes[1].kills
+                        killmult += timerbikes[2].kills
+                        winnerhighscore *= killmult
+                        winnerhighscore *= 10
+                else:
+                    if(inTeams == 2):
+                        winnerhighscore += finalTimes[2]
+                        winnerhighscore += finalTimes[3]
+                        killmult += timerbikes[2].kills
+                        killmult += timerbikes[3].kills
+                        winnerhighscore *= killmult
+                        winnerhighscore *= 10
+                    else:
+                        winnerhighscore += finalTimes[3]
+                        killmult += timerbikes[3].kills
+                        winnerhighscore *= killmult
+                        winnerhighscore *= 2
+                        winnerhighscore *= 10
+            else:
+                if(timerbikes[0].left_key == bikes[0].left_key):
+                        winnerhighscore += finalTimes[0]
+                        killmult += timerbikes[0].kills
+                        winnerhighscore *= killmult
+                        winnerhighscore *= 10
+                elif(timerbikes[1].left_key == bikes[0].left_key):
+                        winnerhighscore += finalTimes[1]
+                        killmult += timerbikes[1].kills
+                        winnerhighscore *= killmult
+                        winnerhighscore *= 10
+                elif(timerbikes[2].left_key == bikes[0].left_key):
+                        winnerhighscore += finalTimes[2]
+                        killmult += timerbikes[2].kills
+                        winnerhighscore *= killmult
+                        winnerhighscore *= 10
+                elif(timerbikes[3].left_key == bikes[0].left_key):
+                        winnerhighscore += finalTimes[3]
+                        killmult += timerbikes[3].kills
+                        winnerhighscore *= killmult
+                        winnerhighscore *= 10
+
+            for num in range(10 - len(str(winnerhighscore))):
+                highscorezeros = highscorezeros + "0"
+            winnerscore = highscorezeros + str(winnerhighscore)
+            for highscore in highscores:
+                if(highscore >= winnerscore):
+                    place += 1
+            highscores.insert(place, winnerscore)
+            print(place)
+            print(highscores[10])
+
+            while(endState):
+                for event in pygame.event.get():
+                    if event.type == pygame.KEYDOWN:
+                        if event.key == pygame.K_RETURN:
+                            print(place)
+                            Leader_Board(inTeams, place, file)
 
 # when the loop is done, quit
 #Initialize the Game
