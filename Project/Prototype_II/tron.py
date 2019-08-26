@@ -73,6 +73,10 @@ GRID_FG = c.GRID_BLUE
 # initialize pygame module
 # def initialize():
 
+# plays the music
+pygame.mixer.music.load('Assets/theme.mp3')
+pygame.mixer.music.play(-1)
+
 screen = pygame.display.set_mode([screen_width, screen_height], pygame.NOFRAME)
 
 pygame.display.set_caption('Prototype II')
@@ -224,7 +228,7 @@ def game_mode_menu():
     selected = "1 V 1"
     global mode_menu
     #Esc key brings you back to main menu - Chris work on
-    
+
     while mode_menu:
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
