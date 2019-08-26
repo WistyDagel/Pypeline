@@ -290,6 +290,8 @@ def game_mode_menu():
                     mode_menu = False
                     pygame.quit()
                     exit()
+                if event.key == pygame.K_ESCAPE:
+                    main_menu()
                 if event.key == pygame.K_UP:
                     selected = "1 V 1"
                 elif event.key == pygame.K_RIGHT:
@@ -364,6 +366,8 @@ def tutorial_menu():
                     mode_menu = False
                     pygame.quit()
                     exit()
+                if event.key == pygame.K_ESCAPE:
+                    main_menu()
                 if event.key == pygame.K_RETURN:
                     game_run()
 
