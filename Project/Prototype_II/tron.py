@@ -64,6 +64,7 @@ game_modes = {"1 V 1" : 2, "2 V 2" : 4, "3 V 1" : 4, "Free For All" : 4} # Dicti
 menu=True #Menu boolean that is set whenever the user is on the main menu
 mode_menu=True #Mode menu boolean that is set whenever the user is on the game mode menu
 leaderboard=True #leaderboard menu
+pause_song=False #Pauses the song when true
 
 # decide on colors
 bike_color = c.YELLOW
@@ -229,6 +230,7 @@ clock = pygame.time.Clock()
 def main_menu():
     selected="start"
     global menu
+    global pause_song
 
     while menu:
         for event in pygame.event.get():
@@ -240,11 +242,17 @@ def main_menu():
                     selected = "start"
                 elif event.key == pygame.K_DOWN:
                     selected = "quit"
+                if event.key == pygame.K_m:
+                    pause_song = not pause_song  
                 if event.key == pygame.K_RETURN:
                     if selected == "start":
                         game_mode_menu()
                     if selected == "quit":
                         exit()
+        if pause_song:
+            pygame.mixer.pause()
+        else:
+            pygame.mixer.unpause()  
 
         screen.fill(BLACK)
         title = text_render("TRON", font, 90, GRID_FG)
