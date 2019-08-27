@@ -430,23 +430,23 @@ def Leader_Board(teams, winnerposition, file):
                     main_menu()
 
         screen.fill(BLACK)
-        title = text_render("LeaderBoard", arcade_font, 50, GRID_FG)
+        title = text_render("LeaderBoard", arcade_font, 50, YELLOW)
         title_rect = title.get_rect()
         screen.blit(title, (screen_width/2 - (title_rect[2]/2), screen_height/60))
         if(teams == 1):
-            subtitle = text_render("1 V 1", arcade_font, 40, GRID_FG)
+            subtitle = text_render("1 V 1", arcade_font, 40, YELLOW)
             subtitle_rect = subtitle.get_rect()
             screen.blit(subtitle, (screen_width/2 - (subtitle_rect[2]/2), (title_rect[2]/9)))
         elif(teams == 2):
-            subtitle = text_render("2 V 2", arcade_font, 40, GRID_FG)
+            subtitle = text_render("2 V 2", arcade_font, 40, YELLOW)
             subtitle_rect = subtitle.get_rect()
             screen.blit(subtitle, (screen_width/2 - (subtitle_rect[2]/2), (title_rect[2]/9)))
         elif(teams == 3):
-            subtitle = text_render("3 V 1", arcade_font, 40, GRID_FG)
+            subtitle = text_render("3 V 1", arcade_font, 40, YELLOW)
             subtitle_rect = subtitle.get_rect()
             screen.blit(subtitle, (screen_width/2 - (subtitle_rect[2]/2), (title_rect[2]/9)))
         elif(teams == 4):
-            subtitle = text_render("Free For All", arcade_font, 40, GRID_FG)
+            subtitle = text_render("Free For All", arcade_font, 40, YELLOW)
             subtitle_rect = subtitle.get_rect()
             screen.blit(subtitle, (screen_width/2 - (subtitle_rect[2]/2), (title_rect[2]/9)))
         
@@ -463,7 +463,7 @@ def Leader_Board(teams, winnerposition, file):
                 highscoreLines.append(str(x + 1) + ": " + names[x] + "     " + highscores[x] + " ")
 
         for x in range(len(highscoreLines)):
-            highscore = text_render(highscoreLines[x], arcade_font, 20, GRID_FG)
+            highscore = text_render(highscoreLines[x], arcade_font, 20, YELLOW)
             highscore_rect = highscore.get_rect()
             screen.blit(highscore, (screen_width/2 - (highscore_rect[2]/2), (title_rect[2]/9) + (subtitle_rect[3]) + (highscore_rect[3] * x)))
 
@@ -474,10 +474,10 @@ def Leader_Board(teams, winnerposition, file):
                 screen.fill(BLACK, (0, 3*screen_height/4, screen_width, screen_height))
                 screen.blit(text_render(">", arcade_font, 20, GRID_FG), (screen_width/2 - (highscore_rect[2]/2) - 25,
                                                                 (title_rect[2]/9) + (subtitle_rect[3]) + (highscore_rect[3] * winnerposition)))
-                settingName = text_render(settingNameText, arcade_font, 40, GRID_FG)
+                settingName = text_render(settingNameText, arcade_font, 40, YELLOW)
                 settingName_rect = settingName.get_rect()
                 screen.blit(settingName, (screen_width/2 - (settingName_rect[2]/2), (8*screen_height/10)))
-                toNextLetter = text_render("Hit enter to lock in the letter", arcade_font, 15, GRID_FG)
+                toNextLetter = text_render("Hit enter to lock in the letter", arcade_font, 15, YELLOW)
                 toNextLetter_rect = toNextLetter.get_rect()
                 screen.blit(toNextLetter, (screen_width/2 - (toNextLetter_rect[2]/2), 9*screen_height/10))
                 for event in pygame.event.get():
@@ -556,10 +556,10 @@ def Leader_Board(teams, winnerposition, file):
             screen.fill(BLACK, (0, 3*screen_height/4, screen_width, screen_height))
             screen.blit(text_render(">", arcade_font, 20, GRID_FG), (screen_width/2 - (highscore_rect[2]/2) - 25,
                                                             (title_rect[2]/9) + (subtitle_rect[3]) + (highscore_rect[3] * winnerposition)))
-            settingName = text_render(settingNameText, arcade_font, 40, GRID_FG)
+            settingName = text_render(settingNameText, arcade_font, 40, YELLOW)
             settingName_rect = settingName.get_rect()
             screen.blit(settingName, (screen_width/2 - (settingName_rect[2]/2), (8*screen_height/10)))
-            toNextLetter = text_render("Hit enter to lock in the letter", arcade_font, 15, GRID_FG)
+            toNextLetter = text_render("Hit enter to lock in the letter", arcade_font, 15, YELLOW)
             toNextLetter_rect = toNextLetter.get_rect()
             screen.blit(toNextLetter, (screen_width/2 - (toNextLetter_rect[2]/2), 9*screen_height/10))
 
@@ -567,10 +567,10 @@ def Leader_Board(teams, winnerposition, file):
             clock.tick(FPS)
             pygame.display.set_caption("LeaderBoard")
 
-        settingName = text_render("Your Score: " + highscores[winnerposition], arcade_font, 35, GRID_FG)
+        settingName = text_render("Your Score: " + highscores[winnerposition], arcade_font, 35, YELLOW)
         settingName_rect = settingName.get_rect()
         screen.blit(settingName, (screen_width/2 - (settingName_rect[2]/2), 8*screen_height/10))
-        toMainMenu = text_render("Hit enter to go to the Main Menu", arcade_font, 15, GRID_FG)
+        toMainMenu = text_render("Hit enter to go to the Main Menu", arcade_font, 15, YELLOW)
         toMainMenu_rect = toMainMenu.get_rect()
         screen.blit(toMainMenu, (screen_width/2 - (toMainMenu_rect[2]/2), 9*screen_height/10))
 
